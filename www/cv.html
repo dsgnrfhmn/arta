@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Theme flash-fix: see the comment in for-you.html. -->
+  <script src="arta-theme.js"></script>
+  <script src="arta-print.js"></script>
+  <title>art-agent — CV</title>
+  <link rel="stylesheet" href="dis-system/tokens/output.css">
+  <link rel="stylesheet" href="dis-system/components/text-button/style.css">
+  <link rel="stylesheet" href="dis-system/components/nav-bar/style.css">
+  <link rel="stylesheet" href="dis-system/components/sidebar-list/style.css">
+  <link rel="stylesheet" href="dis-system/components/sidebar-item/style.css">
+  <link rel="stylesheet" href="dis-system/components/page-head/style.css">
+  <link rel="stylesheet" href="dis-system/components/pane/style.css">
+  <link rel="stylesheet" href="dis-system/components/empty-state/style.css">
+  <link rel="stylesheet" href="dis-system/components/block-row/style.css">
+  <link rel="stylesheet" href="dis-system/components/divider/style.css">
+  <link rel="stylesheet" href="dis-system/components/loading-veil/style.css">
+  <link rel="stylesheet" href="dis-system/components/fade-in/style.css">
+  <script src="dis-system/components/fade-in/component.js"></script>
+  <link rel="stylesheet" href="dis-system/components/skeleton/style.css">
+  <script src="dis-system/components/skeleton/component.js"></script>
+  <link rel="stylesheet" href="dis-system/components/input-dropdown/style.css">
+  <link rel="stylesheet" href="dis-system/components/dropdown-menu/style.css">
+  <link rel="stylesheet" href="dis-system/components/context-menu/style.css">
+  <link rel="stylesheet" href="dis-system/components/header-tab/style.css">
+  <link rel="stylesheet" href="dis-system/components/paper-preview/style.css">
+  <link rel="stylesheet" href="dis-system/fonts/bodoni-moda.css">
+  <link rel="stylesheet" href="dis-system/fonts/karla.css">
+  <link rel="stylesheet" href="dis-system/local-components/cv-sheet/style.css">
+  <link rel="stylesheet" href="dis-system/local-components/zoom-buttons/style.css">
+  <link rel="stylesheet" href="dis-system/local-components/ai-edit-bar/style.css">
+  <link rel="stylesheet" href="dis-system/components/input/style.css">
+  <link rel="stylesheet" href="dis-system/components/popup/style.css">
+  <link rel="stylesheet" href="dis-system/components/toast/style.css">
+  <link rel="stylesheet" href="dis-system/components/tooltip/style.css">
+  <link rel="stylesheet" href="dis-system/site.css">
+  <link rel="stylesheet" href="arta.css">
+  <style>
+    /*
+      CV rebuilt to Figma (dsgnrfhmn, 2026-09-19; screens 20, 21, 22 = nodes
+      150:16362 empty, 150:16233 comparison + loading, 150:16275 block
+      actions). Same frame as Portfolio (screens 10-13) and the same
+      page-local approach: 60px nav, 280px collapsible sidebar, a 60px set
+      header, and two equal 820px panes -- "CV Referent" (source blocks)
+      and "Adjusted CV" (the set being built), each with its own scroll.
+      Nothing here edits dis-system; the shell rules below are Portfolio's,
+      renamed, and move into dis-system together when that page's pieces do.
+    */
+    html, body {
+      height: 100%;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Page color: base/150, the fill of Figma's screen frame (visible under
+       the table rows and around the preview pages). Light theme only, like
+       For You: dark keeps dis-system's own until the dark export. */
+    :root:not([data-theme="dark"]) body {
+      background-color: var(--ds-color-base-150);
+    }
+
+    .cv-shell {
+      --cv-cell-pad: calc(var(--ds-spacing-3) + var(--ds-spacing-1));
+      --cv-row-h: calc(var(--ds-spacing-9) + var(--ds-spacing-2));
+      --cv-btn-px: calc(var(--ds-spacing-4) - var(--ds-border-width-thin));
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* ---- Text buttons in this page (Figma: 11px padding around the label,
+       hover brackets hung inside that box so the box never changes size).
+       Same measurements as for-you.html's header buttons. ---- */
+
+    /* ---- Main column ---- */
+    /* CV Referent one third, Preview two thirds (dsgnrfhmn, 2026-10-24); dragging the handle
+       between them still sets any share (pane's data-resized). */
+    .cv-pane--adjusted:not([data-resized]) {
+      flex-grow: 2;
+    }
+
+    main.cv-main {
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      padding: 0;
+      gap: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Menu grows with its longest label, never narrower than the field. */
+
+    /* ---- Loading (Figma screen 21): the referent list dims under a 50% veil
+       (same overlay token as popups) and a dark tooltip says "Loading". The
+       tooltip sits at the viewport's vertical middle, horizontally centred on
+       the pane, as drawn. */
+    /* Nothing to show yet: the preview draws two blank sheets as dis-system's skeleton
+       (page variant, data-static: no pulse, nothing is loading). */
+    .preview-skeleton[hidden] {
+      display: none;
+    }
+    .preview-skeleton .ds-skeleton {
+      padding: 0 0 var(--ds-spacing-6);
+    }
+    /* As on Portfolio (dsgnrfhmn, 2026-10-24). Fit: the pages edge to edge of the pane, no
+       padding, touching, a hairline between them the only separator; DsCvSheet scales them
+       to the stack's width. Zoomed out (the bar above, data-zoom on the stack): a scale of
+       their own 842 px, centred, on the page colour like paper, paper-preview-stack's
+       spacing-6 around them and cv-sheet's spacing-6 between them, none under the last.
+       The stack fills what the bars leave. */
+    /* The zoom bar sits in the Preview head row, at its right, as on Portfolio: the tab fills
+       the row, so the bar lies over the tab's empty end, as tall as the head. */
+    .cv-pane--adjusted {
+      position: relative;
+    }
+    .cv-preview-zoom {
+      position: absolute;
+      top: 0;
+      right: var(--ds-spacing-6);
+      height: calc(var(--ds-spacing-9) + var(--ds-spacing-5));
+    }
+    .cv-pane--adjusted .ds-paper-preview-stack {
+      flex: 1 1 0;
+      min-height: 0;
+      height: auto;
+    }
+    .cv-pane--adjusted .ds-paper-preview-stack:not([data-zoom]) {
+      padding: 0;
+    }
+    .cv-pane--adjusted .ds-paper-preview-stack:not([data-zoom]) .ds-cv-sheet {
+      margin: 0;
+    }
+    .cv-pane--adjusted .ds-paper-preview-stack:not([data-zoom]) .ds-cv-sheet + .ds-cv-sheet {
+      border-top: var(--ds-border-width-thin) solid var(--ds-color-border-table);
+    }
+    .cv-pane--adjusted .ds-cv-sheet:last-child {
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <nav class="ds-nav-bar" data-fade-skip aria-label="Primary" data-title="shown">
+    <div class="ds-nav-bar__left"><span class="ds-nav-bar__title" data-nav-title aria-hidden="true">arta dashboard</span></div>
+
+    <div class="ds-nav-bar__center">
+      <a href="for-you.html" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="solid">For you<span class="ds-nav-bar__dot" data-nav-dot role="img" aria-label="Unread updates" hidden></span></a>
+      <a href="portfolio.html" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="solid">Portfolio</a>
+      <a href="cv.html" class="ds-text-button" data-priority="primary" data-status="active" data-underline="solid" aria-current="page">CV</a>
+    </div>
+
+    <div class="ds-nav-bar__right">
+      <button type="button" class="ds-text-button ds-nav-bar__theme-toggle" data-priority="secondary" data-status="active" data-underline="dotted">
+        <span class="ds-text-button__icon ds-nav-bar__theme-icon" data-icon="theme-light" aria-hidden="true"></span>
+        <span class="ds-text-button__label ds-nav-bar__theme-label">Dark</span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="cv-shell" id="cv-shell" data-fade-hold data-fade-region data-resizable data-resize-target="start" data-resize-key="cv-sidebar" data-min-size="240" data-min-rest="640">
+    <!-- Sidebar: the CV sets, rendered from the model in the script below. -->
+    <aside class="ds-sidebar-list" id="cv-sidebar" aria-label="CV sets" data-collapsed="false">
+      <div class="ds-sidebar-list__head">
+        <span class="ds-sidebar-list__title">Your CV sets</span>
+        <button type="button" class="ds-sidebar-list__toggle" id="cv-sidebar-toggle" aria-expanded="true" aria-controls="cv-sidebar-list" aria-label="Collapse sidebar">
+          <span class="ds-sidebar-list__toggle-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="ds-sidebar-list__items" id="cv-sidebar-list" data-skeleton="item:5"></div>
+    </aside>
+
+    <div class="ds-split__handle" role="separator" aria-orientation="vertical" tabindex="0" aria-label="Resize sidebar"></div>
+
+    <main class="cv-main">
+      <div class="ds-page-head">
+        <div class="ds-page-head__left">
+          <h1 class="ds-page-head__title" id="cv-set-title"></h1>
+        </div>
+        <div class="ds-page-head__right">
+          <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" id="cv-undo">Undo</button>
+          <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" id="cv-redo">Redo</button>
+          <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" id="cv-save-set" data-popup-open="cv-save-set-popup">Save CV Set</button>
+          <button type="button" class="ds-text-button ds-ai-edit-bar__toggle" data-priority="secondary" data-status="active" data-underline="dotted" id="cv-edit-ai" aria-expanded="false" aria-controls="cv-ai-bar">Edit with AI</button>
+          <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" id="cv-download-pdf">Download PDF</button>
+        </div>
+      </div>
+
+
+      <div class="ds-split" data-resizable data-resize-key="cv-adjusted">
+        <section class="ds-pane cv-pane--referent" aria-labelledby="cv-referent-title">
+          <div class="ds-pane__head">
+            <div class="ds-pane__heading">
+              <span class="ds-pane__title" id="cv-referent-title" data-emphasis="true">CV Referent</span>
+            </div>
+            <!-- No referent chooser (dsgnrfhmn, 2026-10-25): the pane always shows the Full CV.
+                 Add All puts every block of it into the set; once all are in, the button reads
+                 Remove All and empties the set (dsgnrfhmn, 2026-10-25). Label and tooltip by cv-page.js. -->
+            <button type="button" class="ds-text-button" id="cv-referent-all" data-priority="secondary" data-status="active" data-underline="dotted" data-tooltip="Add every block of the Full CV to this CV set"><span class="ds-text-button__text">Add All</span></button>
+          </div>
+          <div class="ds-pane__body">
+            <div class="ds-pane__scroll">
+              <ul class="ds-block-list" id="cv-referent-list" aria-label="Referent CV blocks" data-skeleton="block:4"></ul>
+            </div>
+            <div class="ds-loading-veil" id="cv-loading" hidden role="status">
+              <div class="ds-loading-veil__tip" id="cv-loading-tip"><span class="ds-loading-veil__icon" aria-hidden="true"></span><span>Loading</span></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="ds-split__handle" role="separator" aria-orientation="vertical" tabindex="0" aria-label="Resize preview"></div>
+
+        <section class="ds-pane cv-pane--adjusted" aria-label="Preview">
+          <div class="ds-header-tabs" role="tablist">
+            <button type="button" class="ds-header-tab" data-size="compact" role="tab" id="cv-tab-preview" aria-selected="true" aria-controls="cv-panel-preview" data-tab="preview">
+              <!-- Page count is a mock until the pagination engine exists (CLAUDE.md, phase boundary). -->
+              <span class="ds-header-tab__text"><span class="ds-header-tab__label">Preview</span><span class="ds-header-tab__count" id="cv-preview-count">0 pages</span></span>
+            </button>
+          </div>
+          <!-- How the sheets are shown (dsgnrfhmn, 2026-10-24): fit to the pane's width, or a smaller zoom
+               of the sheet's own 842 px; drawn by DsZoomButtons.bar, the same bar as on Portfolio.
+               At the right of the head row, over the tab's empty end, outside the tablist. -->
+          <div class="cv-preview-zoom" id="cv-zoom-bar"></div>
+          <div class="ds-pane__body" data-divider="start" id="cv-panel-preview" role="tabpanel" aria-labelledby="cv-tab-preview">
+            <!-- Edit with AI: opened by the header button; right under the tabs, as tall as the pane head. -->
+            <div class="ds-ai-edit-bar" id="cv-ai-bar" hidden>
+              <input class="ds-input ds-ai-edit-bar__input" id="cv-ai-input" type="text" data-fill="filled" maxlength="2000" placeholder="Describe the change, e.g. shorten the bio" aria-label="Describe the change to the CV set" autocomplete="off">
+              <button type="button" class="ds-text-button ds-ai-edit-bar__button" id="cv-ai-run" data-priority="secondary" data-status="active" data-underline="dotted">Edit</button>
+            </div>
+            <div class="ds-paper-preview-stack" id="cv-preview-pages"></div>
+            <div class="ds-paper-preview-stack preview-skeleton" id="cv-preview-empty" aria-hidden="true" hidden><div class="ds-skeleton" data-variant="page" data-static><span class="ds-skeleton__bar"></span></div><div class="ds-skeleton" data-variant="page" data-static><span class="ds-skeleton__bar"></span></div></div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create a new CV set popup, same pattern as Portfolio's SS5.5.1 (Figma screen 17):
+       a name, or none and the server names it "CV Set N". -->
+  <div class="ds-popup-overlay" id="cv-create-set-popup" data-placement="center" hidden>
+    <div class="ds-popup" data-size="small" role="dialog" aria-labelledby="cv-create-set-title" tabindex="-1">
+      <div class="ds-popup__title" id="cv-create-set-title">Create a new CV set</div>
+      <div class="ds-popup__body" data-type="input">
+        <input class="ds-input" type="text" id="cv-create-set-name" placeholder="Name your CV set" aria-label="Name your CV set" autocomplete="off">
+      </div>
+      <div class="ds-popup__bottom">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-popup-dismiss>Cancel</button>
+        <button type="button" class="ds-text-button" data-priority="primary" data-status="active" data-underline="dotted" id="cv-create-set-confirm" data-popup-dismiss>Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save CV set popup (SS6.7.5), same pattern as Portfolio's SS5.6.2 -->
+  <div class="ds-popup-overlay" id="cv-save-set-popup" data-placement="center" hidden>
+    <div class="ds-popup" data-size="small" role="dialog" aria-labelledby="cv-save-set-title" tabindex="-1">
+      <div class="ds-popup__title" id="cv-save-set-title">Save CV set</div>
+      <div class="ds-popup__body" data-type="input">
+        <input class="ds-input" type="text" id="cv-save-set-name" placeholder="Name your CV set">
+      </div>
+      <div class="ds-popup__bottom">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-popup-dismiss>Cancel</button>
+        <button type="button" class="ds-text-button" data-priority="primary" data-status="active" data-underline="dotted" id="cv-save-set-confirm" data-popup-dismiss data-popup-confirm>Save CV set</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right click on a CV set in the sidebar (context-menu). One menu for every set: the
+       row it was opened on comes with the ds-context-menu-select event. Delete sits apart,
+       and asks first. -->
+  <div class="ds-dropdown-menu ds-context-menu" id="cv-set-menu" role="menu" aria-label="CV set actions" hidden>
+    <button type="button" class="ds-dropdown-menu__item" role="menuitem" data-value="rename">Rename</button>
+    <button type="button" class="ds-dropdown-menu__item" role="menuitem" data-value="duplicate">Duplicate</button>
+    <button type="button" class="ds-dropdown-menu__item" role="menuitem" data-value="download-pdf">Download PDF</button>
+    <hr class="ds-divider" data-orientation="horizontal" role="separator">
+    <button type="button" class="ds-dropdown-menu__item" role="menuitem" data-value="delete">Delete</button>
+  </div>
+
+  <!-- Opened from the menu: the popup component opens an overlay on a click on its
+       [data-popup-open] element, so the menu's choices click these. -->
+  <button type="button" hidden id="cv-rename-trigger" data-popup-open="cv-rename-set-popup" tabindex="-1" aria-hidden="true"></button>
+  <button type="button" hidden id="cv-delete-trigger" data-popup-open="cv-delete-set-popup" tabindex="-1" aria-hidden="true"></button>
+
+  <!-- Rename CV set: same pattern as the create popup. -->
+  <div class="ds-popup-overlay" id="cv-rename-set-popup" data-placement="center" hidden>
+    <div class="ds-popup" data-size="small" role="dialog" aria-labelledby="cv-rename-set-title" tabindex="-1">
+      <div class="ds-popup__title" id="cv-rename-set-title">Rename CV set</div>
+      <div class="ds-popup__body" data-type="input">
+        <input class="ds-input" type="text" id="cv-rename-set-name" placeholder="Name your CV set" aria-label="Name your CV set" autocomplete="off">
+      </div>
+      <div class="ds-popup__bottom">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-popup-dismiss>Cancel</button>
+        <button type="button" class="ds-text-button" data-priority="primary" data-status="active" data-underline="dotted" id="cv-rename-set-confirm" data-popup-dismiss data-popup-confirm>Rename</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- API cost confirmation for Edit with AI (arta-ai-edit.js): the text is set per call by askConfirm(). -->
+  <button type="button" hidden id="cv-confirm-trigger" data-popup-open="cv-confirm-popup" tabindex="-1" aria-hidden="true"></button>
+  <div class="ds-popup-overlay" id="cv-confirm-popup" data-placement="anchored" hidden>
+    <div class="ds-popup" data-size="small" role="dialog" aria-labelledby="cv-confirm-title" tabindex="-1">
+      <div class="ds-popup__title" id="cv-confirm-title">Confirm</div>
+      <div class="ds-popup__body" data-type="text">
+        <p id="cv-confirm-body"></p>
+      </div>
+      <div class="ds-popup__bottom">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-popup-dismiss>Cancel, keep the changes</button>
+        <button type="button" class="ds-text-button" data-priority="primary" data-status="active" data-underline="dotted" id="cv-confirm-ok" data-popup-dismiss>Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete CV set: confirmed, because the set and what is in it go for good (SS6.7.6,
+       SS5.5.7). Distinct from archive. -->
+  <div class="ds-popup-overlay" id="cv-delete-set-popup" data-placement="center" hidden>
+    <div class="ds-popup" data-size="small" role="dialog" aria-labelledby="cv-delete-set-title" tabindex="-1">
+      <div class="ds-popup__title" id="cv-delete-set-title">Delete CV set</div>
+      <div class="ds-popup__body" data-type="text">
+        <p id="cv-delete-set-body"></p>
+      </div>
+      <div class="ds-popup__bottom">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-popup-dismiss>Cancel, keep it</button>
+        <button type="button" class="ds-text-button" data-priority="primary" data-status="active" data-underline="dotted" id="cv-delete-set-confirm" data-popup-dismiss>Delete CV set</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- The component scripts below are deferred: the boot script runs the text/boot scripts
+       in this order once the page is ready (the components and arta.js wire the elements
+       that exist when they run). -->
+  <script src="arta-api.js"></script>
+  <script src="arta-pdf.js"></script>
+  <script src="arta-recent.js"></script>
+  <script src="arta-ai-edit.js"></script>
+  <script src="arta-boot.js"></script>
+  <script src="dis-system/local-components/cv-sheet/component.js"></script>
+  <script src="cv-referents.js"></script>
+  <script type="text/boot" src="dis-system/components/text-button/component.js"></script>
+  <script type="text/boot" src="dis-system/local-components/zoom-buttons/component.js"></script>
+  <script type="text/boot" src="dis-system/local-components/ai-edit-bar/component.js"></script>
+  <script type="text/boot" src="dis-system/components/sidebar-list/component.js"></script>
+  <!-- Not text/boot: the split only needs the static shell, and a remembered width must be
+       applied before the data arrives, or the panes jump when it does. -->
+  <script src="dis-system/components/pane/component.js"></script>
+  <script type="text/boot" src="dis-system/components/input-dropdown/component.js"></script>
+  <script type="text/boot" src="dis-system/components/dropdown-menu/component.js"></script>
+  <script type="text/boot" src="dis-system/components/context-menu/component.js"></script>
+  <script type="text/boot" src="dis-system/components/input/component.js"></script>
+  <script type="text/boot" src="dis-system/components/popup/component.js"></script>
+  <script type="text/boot" src="dis-system/components/toast/component.js"></script>
+  <script type="text/boot" src="dis-system/components/tooltip/component.js"></script>
+  <script type="text/boot" src="cv-page.js"></script>
+  <script type="text/boot" src="arta.js"></script>
+</body>
+</html>

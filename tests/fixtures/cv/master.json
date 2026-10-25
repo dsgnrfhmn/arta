@@ -1,0 +1,119 @@
+{
+  "blocks": [
+    {
+      "id": "85a96efe-7a68-4c5c-be82-a4398a814015",
+      "kind": "heading",
+      "text": "Bio"
+    },
+    {
+      "id": "5ba6cee6-887e-4560-8148-747f46386830",
+      "kind": "text",
+      "text": "Jane Roe is a painter and textile artist based in Eastmoor. She was born in 1986 in Westfield and trained first as a textile designer, then as a painter, finishing her MFA at the Eastmoor School of Art in 2016. Since then she has shown in museums, artist-run spaces and textile fairs, and held a studio fellowship at the Riverside Art Institute. She teaches in the textile department part-time."
+    },
+    {
+      "id": "31557ee5-beb1-4975-99e2-359dd6afd7bc",
+      "kind": "text",
+      "text": "Roe's work moves between paint and cloth. Her paintings follow one stretch of shore through the year, and her weavings record the weather of a single day in rows of dyed wool. Both come from long, repeated routines: the same walk, the same loom, the same palette mixed again. She is interested in how a routine turns into a record, and how a record can be read by someone else."
+    },
+    {
+      "id": "1ce03529-92a2-468b-826c-8aaf671d4d7b",
+      "kind": "heading",
+      "text": "Professional experience"
+    },
+    {
+      "id": "ae4e1203-c00e-47fe-b0d9-d229dca424cc",
+      "kind": "heading",
+      "text": "2025"
+    },
+    {
+      "id": "148a83fc-6465-403a-9b19-002094dc8294",
+      "kind": "text",
+      "text": "Talk, “Painting the same view for a year: notes from the shore“ (within the series “Studio Visits”), Gallery One, Eastmoor | YY"
+    },
+    {
+      "id": "c4a61b16-8bad-4a25-aead-7bf017cab81f",
+      "kind": "text",
+      "text": "Workshop, “Weaving a weather diary”, for adults and teenagers, Library of Eastmoor | YY"
+    },
+    {
+      "id": "6143adb1-c710-4e99-900f-647735823330",
+      "kind": "text",
+      "text": "Panel, “Studios for artists with children”, Riverside Art Institute, Eastmoor | YY"
+    },
+    {
+      "id": "6240e75a-0b4c-45ba-b006-355e671caccb",
+      "kind": "heading",
+      "text": "2024"
+    },
+    {
+      "id": "481b8130-8eb2-467a-a6e0-8fe186338ecb",
+      "kind": "text",
+      "text": "Visiting tutor, “Colour from plants: dyeing with what grows nearby”; Textile Department, Eastmoor School of Art | YY"
+    },
+    {
+      "id": "b06ab697-52fc-4a6b-a94a-625cbfd1790d",
+      "kind": "text",
+      "text": "Workshop, “A loom from a picture frame”; Community Garden, Northbay | XX"
+    },
+    {
+      "id": "12d80aa8-9f3b-4c24-a986-3d124759b59d",
+      "kind": "text",
+      "text": "Gallery educator, “Looking slowly”; Museum Four, Northbay | XX"
+    },
+    {
+      "id": "ce8fc57c-8111-4eff-95a3-94c79e57a14b",
+      "kind": "text",
+      "text": "Gallery educator, “Looking slowly”; Museum Four, Northbay | XX"
+    }
+  ],
+  "referents": [
+    {
+      "id": "short",
+      "name": "Short CV",
+      "blocks": [
+        "85a96efe-7a68-4c5c-be82-a4398a814015",
+        "5ba6cee6-887e-4560-8148-747f46386830",
+        "1ce03529-92a2-468b-826c-8aaf671d4d7b",
+        "ae4e1203-c00e-47fe-b0d9-d229dca424cc",
+        "148a83fc-6465-403a-9b19-002094dc8294",
+        "6240e75a-0b4c-45ba-b006-355e671caccb",
+        "12d80aa8-9f3b-4c24-a986-3d124759b59d"
+      ]
+    },
+    {
+      "id": "middle",
+      "name": "Middle CV",
+      "blocks": [
+        "85a96efe-7a68-4c5c-be82-a4398a814015",
+        "5ba6cee6-887e-4560-8148-747f46386830",
+        "31557ee5-beb1-4975-99e2-359dd6afd7bc",
+        "1ce03529-92a2-468b-826c-8aaf671d4d7b",
+        "ae4e1203-c00e-47fe-b0d9-d229dca424cc",
+        "148a83fc-6465-403a-9b19-002094dc8294",
+        "c4a61b16-8bad-4a25-aead-7bf017cab81f",
+        "6240e75a-0b4c-45ba-b006-355e671caccb",
+        "481b8130-8eb2-467a-a6e0-8fe186338ecb",
+        "12d80aa8-9f3b-4c24-a986-3d124759b59d"
+      ]
+    },
+    {
+      "id": "full",
+      "name": "Full CV",
+      "blocks": [
+        "85a96efe-7a68-4c5c-be82-a4398a814015",
+        "5ba6cee6-887e-4560-8148-747f46386830",
+        "31557ee5-beb1-4975-99e2-359dd6afd7bc",
+        "1ce03529-92a2-468b-826c-8aaf671d4d7b",
+        "ae4e1203-c00e-47fe-b0d9-d229dca424cc",
+        "148a83fc-6465-403a-9b19-002094dc8294",
+        "c4a61b16-8bad-4a25-aead-7bf017cab81f",
+        "6143adb1-c710-4e99-900f-647735823330",
+        "6240e75a-0b4c-45ba-b006-355e671caccb",
+        "481b8130-8eb2-467a-a6e0-8fe186338ecb",
+        "b06ab697-52fc-4a6b-a94a-625cbfd1790d",
+        "12d80aa8-9f3b-4c24-a986-3d124759b59d",
+        "ce8fc57c-8111-4eff-95a3-94c79e57a14b"
+      ]
+    }
+  ]
+}

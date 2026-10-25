@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--
+    Theme flash-fix: stamp data-theme synchronously, before any stylesheet
+    or paint, so the page never renders one frame of the wrong theme while
+    waiting for arta.js (loaded at the end of body) to run. A synchronous
+    file, not inline: the CSP (web/static.py) allows no inline script. The rest
+    of the theme logic (icon/label, click handler, persistence) lives in
+    arta.js, shared by all three pages.
+  -->
+  <script src="arta-theme.js"></script>
+  <title>art-agent — For you</title>
+  <link rel="stylesheet" href="dis-system/tokens/output.css">
+  <link rel="stylesheet" href="dis-system/components/text-button/style.css">
+  <link rel="stylesheet" href="dis-system/components/nav-bar/style.css">
+  <link rel="stylesheet" href="dis-system/components/header-block/style.css">
+  <link rel="stylesheet" href="dis-system/components/table-header/style.css">
+  <link rel="stylesheet" href="dis-system/components/table-header-actions/style.css">
+  <link rel="stylesheet" href="dis-system/components/table-footer/style.css">
+  <link rel="stylesheet" href="dis-system/components/table-header-cell/style.css">
+  <link rel="stylesheet" href="dis-system/components/table-cell/style.css">
+  <link rel="stylesheet" href="dis-system/components/table-row/style.css">
+  <link rel="stylesheet" href="dis-system/components/input/style.css">
+  <link rel="stylesheet" href="dis-system/components/input-dropdown/style.css">
+  <link rel="stylesheet" href="dis-system/components/dropdown-menu/style.css">
+  <link rel="stylesheet" href="dis-system/components/popup/style.css">
+  <link rel="stylesheet" href="dis-system/components/toast/style.css">
+  <link rel="stylesheet" href="dis-system/components/fade-in/style.css">
+  <link rel="stylesheet" href="dis-system/components/loading-veil/style.css">
+  <script src="dis-system/components/fade-in/component.js"></script>
+  <link rel="stylesheet" href="dis-system/components/skeleton/style.css">
+  <script src="dis-system/components/skeleton/component.js"></script>
+  <link rel="stylesheet" href="dis-system/components/tooltip/style.css">
+  <link rel="stylesheet" href="dis-system/fonts/libre-bodoni.css">
+  <link rel="stylesheet" href="dis-system/local-components/hero-block/style.css">
+  <link rel="stylesheet" href="dis-system/components/pane/style.css">
+  <link rel="stylesheet" href="dis-system/local-components/detail-pane/style.css">
+  <link rel="stylesheet" href="dis-system/site.css">
+  <link rel="stylesheet" href="arta.css">
+  <style>
+    /*
+      For You redesign (Figma arta file, node ids
+      150:16071/150:16768/150:16800/150:16834 -- the 4 screens dsgnrfhmn asked
+      to implement). The tab strip is gone (dsgnrfhmn, 2026-10-11): the page shows
+      only the All table. The For Review / Analysed / Archived / Filtered
+      panels stay in the markup, hidden, because the page script and the hero's
+      "Show Analysed" action still address those tables.
+
+      Column shapes read directly off Figma, one grid per table (same CSS-
+      grid + .ds-table-row{display:contents} technique this page already
+      used pre-redesign -- see table-cell's own meta.json for why):
+      - Review: 8 cols -- checkbox, save, Name, Type, Full Description,
+        Status, Link, Actions.
+      - Analysed / Archived: 11 cols -- checkbox, save, Name, Type, Apply
+        Deadline, Summary, Full Description, Status, Link, Notes, Actions. Archived
+        gains Apply Deadline/Summary/Notes in this redesign (an archived
+        item was already analysed before being archived, so it keeps that
+        data) -- previously Archived shared Review's simpler 7-col shape.
+      - Filtered: 8 cols -- checkbox, save, Name, Type, Full
+        Description, Status, Link, Actions. A filtered item was never
+        analysed (auto-rejected during intake), so it has no Deadline/
+        Summary/Notes. Its Status is "Filtered" (a dropdown like every
+        table's, offering For review) with a view button that opens the
+        reason.
+
+      Status (dsgnrfhmn, 2026-09-21, Figma 237:30119 / 237:31133): every table has a
+      Status column after Full Description, a dropdown like the Tracker's. The
+      row tint comes from the row's data-status (dis-system table-row).
+
+      Notes is minmax(260px, ...), not 140px: found via an actual
+      browser check that table-cell's own data-type="input" cell
+      composes a fixed-width 240px .ds-input (its own documented
+      Penpot-sourced field width), right-aligned within its cell. A
+      narrower grid track doesn't clip it -- the input renders at full
+      width regardless and visibly overlaps the Link column to its left
+      instead, real content sitting on top of a neighboring cell. 260px
+      is 240px plus this cell's own spacing-3 horizontal padding on both
+      sides (table-cell/style.css). Same fix applied to tracker.html's
+      own Notes column, found there first.
+    */
+    /* Review columns read off Figma node 150:16082 (2026-09-18): checkbox
+       and save are 44px squares (24px icon + 10px padding), Type is a fixed
+       140px, Link 123px, Actions 181px, and Name / Full Description split
+       the remaining width evenly (both flex-[1_0_0] there). Actions is a
+       minimum, not fixed, so a wider button pair can never spill into the
+       Link column (the row buttons themselves hug their labels, see the
+       action-button rule further down). Link is a minimum too (dsgnrfhmn,
+       2026-09-18, "the link column should be a bit wider so Link to source
+       fits without wrapping"): 123px is exactly "Link to source" plus the
+       button's 11px each side in Figma's own font metrics, so a real Inter
+       render a pixel or two wider wrapped onto two lines in this fixed
+       track. The other three tables already size that column to its
+       content. */
+    /* Status column (dsgnrfhmn, 2026-09-21; width behavior corrected 2026-09-22,
+       direct report "make status dropdown in rows same width as header
+       row... arrow aligned with header's filter arrow"): --foryou-status-w
+       still sizes the grid column track -- the width of the longest label
+       ("For review", "Approved"), 10px padding each side, the label, a
+       10px gap and the 24px arrow, 150px because Inter is wider than the
+       fallback face. Filtered and All still add 60px to that track for the
+       "view" button that opens the filter reason.
+
+       The dropdown itself, though, no longer pins to a fixed 150px inside
+       that track: it used flex:none + a fixed width, left-aligned, which
+       matched the track exactly on Review/Analysed/Archived (no view
+       button, track == 150px + padding) but on Filtered/All (track +60px
+       for the view button) left the dropdown, and so its own arrow, sitting
+       60px short of the header cell's own flush-right arrow (sort-btn on
+       Analysed, filter-btn on All -- both width:100% of the header cell,
+       table-header-cell/style.css). flex:1 1 auto makes the dropdown grow
+       to fill whatever the cell actually is, same as the header does, so
+       the two line up by construction instead of by matching a hard-coded
+       number -- input-dropdown's own justify-content:space-between then
+       keeps the arrow flush at the dropdown's own right edge, same
+       mechanism the header's sort-btn/filter-btn already use. This is
+       dis-system's own default for a dropdown-type cell (table-cell/
+       style.css); the page-level override that fought it (flex:none, fixed
+       width, justify-content:flex-start) is removed outright. On a row
+       that also shows the trailing "view" (a filtered record with a
+       stored reason), the dropdown shares the track with it instead of
+       reserving a full 60px unconditionally -- arrow and header stay
+       aligned on every other row, the majority case; a row with both
+       narrows the dropdown by the view button's own width, which is the
+       one case this can't avoid without overlapping the two. */
+    .foryou-table {
+      --foryou-status-w: 150px;
+    }
+    .foryou-table .ds-table-cell[data-type="dropdown"] .ds-dropdown {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .foryou-review-table {
+      display: grid;
+      grid-template-columns:
+        max-content
+        max-content
+        minmax(160px, 1fr)
+        140px
+        minmax(220px, 1fr)
+        calc(var(--foryou-status-w) + 2 * var(--ds-spacing-cell))
+        minmax(123px, max-content)
+        minmax(160px, 1fr)
+        minmax(181px, max-content);
+    }
+    /* Analysed / Archived columns read off Figma node 150:16779 (1920px
+       frame, 2026-09-18): checkbox and save 44px, Type 140px, Apply
+       Deadline 200px, Link and Actions hug their content, and Name /
+       Summary / Full Description / Notes split what is left evenly (all
+       four are flex-[1_0_0] there -- ~263px each at 1920). Notes is
+       flexible now because its input fills the cell (see the Notes rule
+       below) instead of being a fixed 240px box. Actions is max-content
+       because the row buttons hang their hover brackets inside their own
+       padding (also below), so it hugs exactly what Figma's does. */
+    .foryou-analysed-table,
+    .foryou-archived-table {
+      display: grid;
+      grid-template-columns:
+        max-content
+        max-content
+        minmax(140px, 1fr)
+        160px
+        200px
+        minmax(160px, 1fr)
+        minmax(160px, 1fr)
+        calc(var(--foryou-status-w) + 2 * var(--ds-spacing-cell))
+        max-content
+        minmax(160px, 1fr)
+        max-content;
+    }
+    .foryou-filtered-table {
+      display: grid;
+      grid-template-columns:
+        max-content
+        max-content
+        minmax(160px, 1fr)
+        max-content
+        minmax(180px, 1.2fr)
+        calc(var(--foryou-status-w) + 2 * var(--ds-spacing-cell) + 60px)
+        max-content
+        minmax(160px, 1fr)
+        max-content;
+    }
+    /* All: the union of the four tables' columns, in the order they first
+       appear -- checkbox, save, Name, Type, Apply Deadline, Summary, Full
+       Description, Status, Link, Notes, Actions. Track sizes are the ones the
+       tables above use for the same column. Status is the dropdown plus "view"
+       on a filtered record, so it gets the Filtered table's 240px minimum.
+       Type is 160px, not 140px, so its header stays whole next to the
+       sort arrow. Link and Actions have a floor at their widest content over all
+       rows (Actions differs per status): a max-content track only sees the rows a
+       Status filter leaves visible, so without it the columns jump on every
+       filter change. */
+    .foryou-all-table {
+      display: grid;
+      grid-template-columns:
+        max-content
+        max-content
+        minmax(140px, 1fr)
+        160px
+        200px
+        minmax(160px, 1fr)
+        minmax(160px, 1fr)
+        calc(var(--foryou-status-w) + 2 * var(--ds-spacing-cell) + 60px)
+        minmax(144px, max-content)
+        minmax(160px, 1fr)
+        minmax(120px, max-content)
+        minmax(208px, max-content);
+    }
+    .foryou-review-table .ds-table-row,
+    .foryou-analysed-table .ds-table-row,
+    .foryou-archived-table .ds-table-row,
+    .foryou-filtered-table .ds-table-row,
+    .foryou-all-table .ds-table-row {
+      display: contents;
+    }
+    /* Real bug, found 2026-09-11 via direct user report ("search does not
+       filter the results"): arta.js's live-search listener toggles the
+       native `hidden` attribute on a row to filter it, but `display:
+       contents` above and the UA default `[hidden]{display:none}` are
+       equal-specificity attribute/class selectors (0-1-0 vs 0-2-0, this
+       rule actually wins outright) declared later in the cascade -- either
+       way this rule was overriding `hidden` unconditionally, so a
+       "filtered out" row kept rendering exactly as before, invisibly to
+       anyone not checking the DOM attribute directly. A `[hidden]`-scoped
+       override at higher specificity restores the row's ability to
+       actually disappear; unhidden rows are unaffected, still `display:
+       contents` as before. */
+    .foryou-review-table .ds-table-row[hidden],
+    .foryou-analysed-table .ds-table-row[hidden],
+    .foryou-archived-table .ds-table-row[hidden],
+    .foryou-filtered-table .ds-table-row[hidden],
+    .foryou-all-table .ds-table-row[hidden] {
+      display: none;
+    }
+
+    /* Zero gap from nav bar to tab strip (dsgnrfhmn's direct report, 2026-09-18,
+       "the table sits 0px below the tab bar, the tab bar 0px below the navbar"): Figma's
+       own layout (node 150:16071) places the tab strip immediately at
+       y=60, flush against the nav bar's own 60px height, with zero gap --
+       same zero-gap relationship the tab-strip-to-table-header and
+       header-to-rows transitions already had by construction (each is a
+       plain sibling with no margin between). The only real gap was here,
+       at the very top: dis-system's own site.css gives every `main` a
+       spacing-7 (24px) padding on all sides for its own gallery-page
+       layout; arta.css already zeroes left/right/bottom for every arta
+       page but deliberately leaves top alone (see that file's own
+       comment: "0 for the full-height pages, the site.css default for
+       for-you.html") -- true for the OLD for-you.html layout, where the
+       first thing under <main> was a header-block with its own spacing-6
+       top padding already providing breathing room. The new tab strip has
+       no such padding of its own (Figma wants it flush), so this page now
+       needs the same explicit override the other three pages already
+       get. */
+    main {
+      padding-top: 0;
+    }
+
+    /* Page color: base/150 (#E9E8E6), the fill of Figma's outer screen
+       frame (node 150:16071, the 15px strip visible under the table
+       footer; base/150 is in that node's variable set). Everything that
+       sits on the page carries its own fill (nav, tabs, header row,
+       cells, footer), so only the gaps show it -- here, main's bottom
+       padding below the table. dis-system has no ds slot for a page
+       background (body uses bg-surface), so the arta primitive is used
+       directly. Light theme only: dark keeps its own until the dark
+       export lands. Page-local: other pages get the same treatment when
+       they are taken through their own Figma screens. */
+    :root:not([data-theme="dark"]) body {
+      background-color: var(--ds-color-base-150);
+    }
+
+    /* Only the All panel renders; the other four are hidden in the markup. */
+    .foryou-panel[hidden] {
+      display: none;
+    }
+
+    /*
+      Sticky chrome (dsgnrfhmn, 2026-09-18): the nav bar, the
+      bulk-action row and the table's column-label row stay put while the
+      rows scroll, stacked in that order. dis-system's nav-bar is already
+      sticky at top: 0 (it only needs a z-index here); each of the others
+      sticks where the one above it ends. Those heights are content-driven
+      (the nav bar is ~65px and moves with the font), so the script at the
+      bottom of this page measures them into --foryou-sticky-block /
+      -thead; the fallbacks are the measured values, for the moment before
+      it runs. Stack: nav 40 > actions row 20 > column labels 10,
+      all under popups (100) and toasts (200). Nothing above these clips
+      (no overflow on html/body/main/panel), which sticky needs.
+      The column labels are grid items of the table grid, one sticky cell
+      each; their fills are already opaque, so rows scroll under them.
+    */
+    .ds-nav-bar {
+      z-index: 40;
+    }
+    .foryou-panel .ds-header-block[data-size="big"] {
+      position: sticky;
+      top: var(--foryou-sticky-block, 125px);
+      z-index: 20;
+    }
+    /* The Recent Activity menu holds set names, wider than its button. */
+    .foryou-recent-menu {
+      min-width: 320px;
+    }
+    /* Hero is 30% of the screen height (dsgnrfhmn, 2026-10-20). */
+    .ds-hero-block {
+      height: 30vh;
+      /* Above the sticky table header (20) so the Recent Activity menu is not
+         cut off by it; below the nav bar (40). */
+      position: relative;
+      z-index: 30;
+    }
+    /* The details pane beside the All table (for-you-pane.js): it sticks with the
+       column labels, under the bulk-action row, and is as tall as the window below them. */
+    .foryou-split > .ds-detail-split__side {
+      top: var(--foryou-sticky-thead, 186px);
+    }
+    .foryou-split .ds-detail.ds-pane {
+      height: calc(100vh - var(--foryou-sticky-thead, 186px));
+    }
+    /* While it is open the table keeps checkbox, save, Name, Type, Status and Actions;
+       the pane shows Apply Deadline, Summary, Full Description, Link, Notes and Updates.
+       More specific than a column resize's sizes, which come back when it closes; the
+       resize handles are off meanwhile, so a drag cannot store sizes for this grid. */
+    .foryou-split[data-open="true"] .foryou-all-table[data-column-resize] {
+      grid-template-columns:
+        max-content
+        max-content
+        minmax(140px, 1fr)
+        160px
+        calc(var(--foryou-status-w) + 2 * var(--ds-spacing-cell) + 60px)
+        minmax(208px, max-content);
+    }
+    .foryou-split[data-open="true"] .foryou-all-table > :is(:nth-child(5), :nth-child(6), :nth-child(7), :nth-child(9), :nth-child(10), :nth-child(11)):not(.ds-table-row),
+    .foryou-split[data-open="true"] .foryou-all-table > .ds-table-row > :is(:nth-child(5), :nth-child(6), :nth-child(7), :nth-child(9), :nth-child(10), :nth-child(11)) {
+      display: none;
+    }
+    .foryou-split[data-open="true"] .ds-table-header-cell__resize {
+      display: none;
+    }
+    /* A row opens its details: the whole row is the target. */
+    .foryou-all-table > .ds-table-row[data-id] > .ds-table-cell {
+      cursor: pointer;
+    }
+    .foryou-table > :not(.ds-table-row):not(.ds-skeleton) {
+      position: sticky;
+      top: var(--foryou-sticky-thead, 186px);
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <!-- data-fade-skip: no fade-in on the static chrome, including what the
+       components wrap or insert inside it after load. -->
+  <nav class="ds-nav-bar" data-fade-skip aria-label="Primary">
+    <div class="ds-nav-bar__left"><span class="ds-nav-bar__title" data-nav-title aria-hidden="true">arta dashboard</span></div>
+
+    <div class="ds-nav-bar__center">
+      <a href="for-you.html" class="ds-text-button" data-priority="primary" data-status="active" data-underline="solid" aria-current="page" data-tooltip="Open calls and grants collected for you">For you<span class="ds-nav-bar__dot" data-nav-dot role="img" aria-label="Unread updates" hidden></span></a>
+      <a href="portfolio.html" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="solid" data-tooltip="Your portfolio sets">Portfolio</a>
+      <a href="cv.html" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="solid" data-tooltip="Your CV sets">CV</a>
+    </div>
+
+    <div class="ds-nav-bar__right">
+      <button type="button" class="ds-text-button ds-nav-bar__theme-toggle" data-priority="secondary" data-status="active" data-underline="dotted" data-tooltip="Switch between light and dark theme">
+        <span class="ds-text-button__icon ds-nav-bar__theme-icon" data-icon="theme-light" aria-hidden="true"></span>
+        <span class="ds-text-button__label ds-nav-bar__theme-label">Dark</span>
+      </button>
+    </div>
+  </nav>
+
+  <main data-fade-region>
+    <!-- The hero fades in on load, by hand (ds-fade-in, dsgnrfhmn 2026-10-24): it is static
+         markup, so fade-in would not animate it. data-fade-skip still keeps what the
+         components insert inside it from fading on its own. -->
+    <div class="ds-hero-block ds-fade-in" data-fade-skip>
+      <h1 class="ds-hero-block__title"><strong class="ds-hero-block__title-strong">arta</strong> dashboard</h1>
+      <div class="ds-hero-block__actions">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" id="foryou-load-opportunities" data-tooltip="Check the mailbox for new open calls and grants">Load new opportunities</button>
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-width-samples="Updates (99 new)|Refreshing..." id="foryou-updates-refresh" data-tooltip="Check the mailbox for replies to your applications">Updates (0 new)</button>
+        <div class="ds-dropdown" data-open-on="hover">
+          <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-icon-position="right" data-dropdown-trigger aria-haspopup="listbox" id="foryou-recent-activity"><span class="ds-text-button__label">Recent Activity</span><span class="ds-text-button__icon" data-icon="arrow-down" aria-hidden="true"></span></button>
+          <div class="ds-dropdown-menu foryou-recent-menu" role="listbox" aria-label="Recent activity" hidden id="foryou-recent-menu"></div>
+        </div>
+        <script src="arta-recent.js"></script>
+        <script src="for-you-recent.js"></script>
+      </div>
+    </div>
+
+    <!-- For Review (SS4.4) -->
+    <section class="foryou-panel" id="foryou-review-panel" hidden>
+      <div class="ds-header-block" data-size="big">
+        <div class="ds-header-block__row" data-has-search="true">
+          <div class="ds-table-header-actions" data-actions-for="foryou-review-table">
+            <button type="button" class="ds-text-button" data-priority="secondary" data-status="disabled" data-underline="dotted" data-gated data-action="bulk-archive" data-popup-open="foryou-archive-confirm-popup" disabled data-tooltip="Move the selected items to Archived">Archive</button>
+            <button type="button" class="ds-text-button" data-priority="primary" data-status="disabled" data-underline="dotted" data-gated data-action="bulk-analyse" data-popup-open="foryou-analyse-confirm-popup" disabled data-tooltip="Analyse the selected items. You confirm the cost first">Analyze</button>
+          </div>
+          <div class="ds-header-block__search" data-open="always" data-align="end">
+            <input type="text" class="ds-input" placeholder="Search" data-search-for="foryou-review-table">
+          </div>
+        </div>
+      </div>
+
+      <div class="foryou-table foryou-review-table" data-column-resize="arta-foryou-review" data-reveal-actions id="foryou-review-table" data-skeleton="row:4" data-checkbox-group data-sort-group>
+        <div class="ds-table-cell" data-type="checkbox-cell" data-checkbox-role="select-all">
+          <span class="ds-table-cell__icon" data-icon="checkbox" data-checkbox-state="unchecked" aria-hidden="true" role="img" aria-label="Select all rows"></span>
+          <span class="ds-table-cell__icon" data-icon="checkbox-selected" data-checkbox-state="checked" aria-hidden="true" role="img" aria-label="Select all rows"></span>
+          <span class="ds-table-cell__icon" data-icon="checkbox-semi-select" data-checkbox-state="indeterminate" aria-hidden="true" role="img" aria-label="Select all rows"></span>
+        </div>
+        <div class="ds-table-cell ds-table-header-cell" data-type="icon-cell" data-favourite-all data-saved="false" data-resize-min="content">
+          <button type="button" class="ds-table-header-cell__favourite-all-btn" aria-pressed="false" aria-label="Mark all as saved" data-tooltip="Save or unsave every row of this table">
+            <span class="ds-table-cell__icon" data-icon="save" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Name</span></div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Type</span></div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Full Description</span></div>
+        <div class="ds-table-header-cell" data-resize-min="content"><span class="ds-table-cell__text">Status</span></div>
+        <div class="ds-table-header-cell" data-resize-min="content"><span class="ds-table-cell__text">Link</span></div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Notes</span></div>
+        <div class="ds-table-header-cell" data-resize-min="content"><span class="ds-table-cell__text">Actions</span></div>
+
+        <!-- Rows: rendered from /api/opportunities by for-you-rows.js -->
+      </div>
+
+      <!-- Load-more footer (Figma 64:7799). 100 is mock data: no intake
+           backend yet, see the click handler at the bottom. -->
+      <div class="ds-table-footer">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-action="load-more" data-tooltip="Show 10 more items">Load 10 more</button>
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-action="load-all" data-tooltip="Show every item of this table">Load all 100</button>
+      </div>
+    </section>
+
+    <!-- Analysed (SS4.3) -->
+    <section class="foryou-panel" id="foryou-analysed-panel" hidden>
+      <div class="ds-header-block" data-size="big">
+        <div class="ds-header-block__row" data-has-search="true">
+          <div class="ds-table-header-actions" data-actions-for="foryou-analysed-table">
+            <button type="button" class="ds-text-button" data-priority="secondary" data-status="disabled" data-underline="dotted" data-gated data-action="bulk-archive" data-popup-open="foryou-archive-confirm-popup" disabled data-tooltip="Move the selected items to Archived">Archive</button>
+            <button type="button" class="ds-text-button" data-priority="primary" data-status="disabled" data-underline="dotted" data-gated data-action="bulk-prepare" data-popup-open="foryou-prepare-confirm-popup" disabled data-tooltip="Prepare application materials for the selected items">Prepare Application</button>
+          </div>
+          <div class="ds-header-block__search" data-open="always" data-align="end">
+            <input type="text" class="ds-input" placeholder="Search" data-search-for="foryou-analysed-table">
+          </div>
+        </div>
+      </div>
+
+      <div class="foryou-table foryou-analysed-table" data-column-resize="arta-foryou-analysed" data-reveal-actions id="foryou-analysed-table" data-skeleton="row:4" data-checkbox-group data-sort-group>
+        <div class="ds-table-cell" data-type="checkbox-cell" data-checkbox-role="select-all">
+          <span class="ds-table-cell__icon" data-icon="checkbox" data-checkbox-state="unchecked" aria-hidden="true" role="img" aria-label="Select all rows"></span>
+          <span class="ds-table-cell__icon" data-icon="checkbox-selected" data-checkbox-state="checked" aria-hidden="true" role="img" aria-label="Select all rows"></span>
+          <span class="ds-table-cell__icon" data-icon="checkbox-semi-select" data-checkbox-state="indeterminate" aria-hidden="true" role="img" aria-label="Select all rows"></span>
+        </div>
+        <div class="ds-table-cell ds-table-header-cell" data-type="icon-cell" data-favourite-all data-saved="false" data-resize-min="content">
+          <button type="button" class="ds-table-header-cell__favourite-all-btn" aria-pressed="false" aria-label="Mark all as saved" data-tooltip="Save or unsave every row of this table">
+            <span class="ds-table-cell__icon" data-icon="save" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Name</span></div>
+        <div class="ds-table-header-cell">
+          <button type="button" class="ds-table-header-cell__sort-btn" data-sort-dir="none" aria-label="Sort by Type" data-tooltip="Sort rows by Type; click again to reverse">
+            <span class="ds-table-cell__text">Type</span>
+            <span class="ds-table-header-cell__sort-icon" data-icon="arrow-down" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="ds-table-header-cell">
+          <button type="button" class="ds-table-header-cell__sort-btn" data-sort-dir="asc" aria-label="Sort by Apply Deadline" data-tooltip="Sort rows by Apply Deadline; click again to reverse">
+            <span class="ds-table-cell__text">Apply Deadline</span>
+            <span class="ds-table-header-cell__sort-icon" data-icon="arrow-down" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Summary</span></div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Full Description</span></div>
+        <div class="ds-table-header-cell" data-resize-min="content">
+          <button type="button" class="ds-table-header-cell__sort-btn" data-sort-dir="none" aria-label="Sort by Status" data-tooltip="Sort rows by Status; click again to reverse">
+            <span class="ds-table-cell__text">Status</span>
+            <span class="ds-table-header-cell__sort-icon" data-icon="arrow-down" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="ds-table-header-cell" data-resize-min="content"><span class="ds-table-cell__text">Link</span></div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Notes</span></div>
+        <div class="ds-table-header-cell" data-resize-min="content"><span class="ds-table-cell__text">Actions</span></div>
+
+        <!-- Rows: rendered from /api/opportunities by for-you-rows.js -->
+      </div>
+    </section>
+
+    <!-- Archived (Figma: keeps the Analysed column shape -- see this
+         page's own <style> comment above) -->
+    <section class="foryou-panel" id="foryou-archived-panel" hidden>
+      <div class="ds-header-block" data-size="big">
+        <div class="ds-header-block__row" data-has-search="true">
+          <div class="ds-table-header-actions" data-actions-for="foryou-archived-table">
+            <button type="button" class="ds-text-button" data-priority="primary" data-status="disabled" data-underline="dotted" data-gated data-action="bulk-unarchive" disabled data-tooltip="Bring the selected items back from Archived">Unarchive</button>
+          </div>
+          <div class="ds-header-block__search" data-open="always" data-align="end">
+            <input type="text" class="ds-input" placeholder="Search" data-search-for="foryou-archived-table">
+          </div>
+        </div>
+      </div>
+
+      <div class="foryou-table foryou-archived-table" data-column-resize="arta-foryou-archived" data-reveal-actions id="foryou-archived-table" data-skeleton="row:4" data-checkbox-group data-sort-group>
+        <div class="ds-table-cell" data-type="checkbox-cell" data-checkbox-role="select-all">
+          <span class="ds-table-cell__icon" data-icon="checkbox" data-checkbox-state="unchecked" aria-hidden="true" role="img" aria-label="Select all rows"></span>
+          <span class="ds-table-cell__icon" data-icon="checkbox-selected" data-checkbox-state="checked" aria-hidden="true" role="img" aria-label="Select all rows"></span>
+          <span class="ds-table-cell__icon" data-icon="checkbox-semi-select" data-checkbox-state="indeterminate" aria-hidden="true" role="img" aria-label="Select all rows"></span>
+        </div>
+        <div class="ds-table-cell ds-table-header-cell" data-type="icon-cell" data-favourite-all data-saved="false" data-resize-min="content">
+          <button type="button" class="ds-table-header-cell__favourite-all-btn" aria-pressed="false" aria-label="Mark all as saved" data-tooltip="Save or unsave every row of this table">
+            <span class="ds-table-cell__icon" data-icon="save" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Name</span></div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Type</span></div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Apply Deadline</span></div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Summary</span></div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Full Description</span></div>
+        <div class="ds-table-header-cell" data-resize-min="content"><span class="ds-table-cell__text">Status</span></div>
+        <div class="ds-table-header-cell" data-resize-min="content"><span class="ds-table-cell__text">Link</span></div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Notes</span></div>
+        <div class="ds-table-header-cell" data-resize-min="content"><span class="ds-table-cell__text">Actions</span></div>
+
+        <!-- Rows: rendered from /api/opportunities by for-you-rows.js -->
+      </div>
+    </section>
+
+    <!-- Filtered -->
+    <section class="foryou-panel" id="foryou-filtered-panel" hidden>
+      <div class="ds-header-block" data-size="big">
+        <div class="ds-header-block__row" data-has-search="true">
+          <div class="ds-table-header-actions" data-actions-for="foryou-filtered-table">
+            <button type="button" class="ds-text-button" data-priority="primary" data-status="disabled" data-underline="dotted" data-gated data-action="bulk-for-review" disabled data-tooltip="Send the selected items back to For Review">Move to "For Review"</button>
+          </div>
+          <div class="ds-header-block__search" data-open="always" data-align="end">
+            <input type="text" class="ds-input" placeholder="Search" data-search-for="foryou-filtered-table">
+          </div>
+        </div>
+      </div>
+
+      <div class="foryou-table foryou-filtered-table" data-column-resize="arta-foryou-filtered" data-reveal-actions id="foryou-filtered-table" data-skeleton="row:4" data-checkbox-group data-sort-group>
+        <div class="ds-table-cell" data-type="checkbox-cell" data-checkbox-role="select-all">
+          <span class="ds-table-cell__icon" data-icon="checkbox" data-checkbox-state="unchecked" aria-hidden="true" role="img" aria-label="Select all rows"></span>
+          <span class="ds-table-cell__icon" data-icon="checkbox-selected" data-checkbox-state="checked" aria-hidden="true" role="img" aria-label="Select all rows"></span>
+          <span class="ds-table-cell__icon" data-icon="checkbox-semi-select" data-checkbox-state="indeterminate" aria-hidden="true" role="img" aria-label="Select all rows"></span>
+        </div>
+        <div class="ds-table-cell ds-table-header-cell" data-type="icon-cell" data-favourite-all data-saved="false" data-resize-min="content">
+          <button type="button" class="ds-table-header-cell__favourite-all-btn" aria-pressed="false" aria-label="Mark all as saved" data-tooltip="Save or unsave every row of this table">
+            <span class="ds-table-cell__icon" data-icon="save" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Name</span></div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Type</span></div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Full Description</span></div>
+        <div class="ds-table-header-cell" data-resize-min="content"><span class="ds-table-cell__text">Status</span></div>
+        <div class="ds-table-header-cell" data-resize-min="content"><span class="ds-table-cell__text">Link</span></div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Notes</span></div>
+        <div class="ds-table-header-cell" data-resize-min="content"><span class="ds-table-cell__text">Actions</span></div>
+
+        <!-- Rows: rendered from /api/opportunities by for-you-rows.js -->
+      </div>
+    </section>
+
+    <!-- All: every record of the four tables above, with all their columns.
+         Bulk actions show per selection (see foryou-all-actions). -->
+    <section class="foryou-panel" id="foryou-all-panel">
+      <div class="ds-header-block" data-size="big">
+        <div class="ds-header-block__row" data-has-search="true">
+          <!-- Shown per selection (dsgnrfhmn, 2026-09-24): a button appears only when it fits
+               every selected row; it acts on those records' rows in their own tabs. -->
+          <div class="ds-table-header-actions" id="foryou-all-actions">
+            <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-all-action="archive" data-popup-open="foryou-archive-confirm-popup" hidden data-tooltip="Move the selected items to Archived">Archive</button>
+            <button type="button" class="ds-text-button" data-priority="primary" data-status="active" data-underline="dotted" data-all-action="analyse" data-popup-open="foryou-analyse-confirm-popup" hidden data-tooltip="Analyse the selected items. You confirm the cost first">Analyze</button>
+            <button type="button" class="ds-text-button" data-priority="primary" data-status="active" data-underline="dotted" data-all-action="prepare" data-popup-open="foryou-prepare-confirm-popup" hidden data-tooltip="Prepare application materials for the selected items">Prepare Application</button>
+            <button type="button" class="ds-text-button" data-priority="primary" data-status="active" data-underline="dotted" data-all-action="unarchive" hidden data-tooltip="Bring the selected items back from Archived">Unarchive</button>
+            <button type="button" class="ds-text-button" data-priority="primary" data-status="active" data-underline="dotted" data-all-action="for-review" hidden data-tooltip="Send the selected items back to For Review">Move to "For Review"</button>
+          </div>
+          <div class="ds-header-block__search" data-open="always" data-align="end">
+            <input type="text" class="ds-input" data-fill="filled" placeholder="Smart search" aria-label="Smart search" data-search-for="foryou-all-table">
+          </div>
+        </div>
+      </div>
+
+      <!-- A row's details beside the table (dsgnrfhmn, 2026-10-25; dis-system detail-pane, staged):
+           a click on a row opens them, docked like a task pane in Word; the table drops the
+           columns the pane shows while it is open (for-you-pane.js). -->
+      <div class="ds-detail-split foryou-split" id="foryou-split">
+      <div class="ds-detail-split__table">
+      <div class="foryou-table foryou-all-table" data-column-resize="arta-foryou-all" data-reveal-actions id="foryou-all-table" data-skeleton="row:4" data-checkbox-group data-sort-group>
+        <div class="ds-table-cell" data-type="checkbox-cell" data-checkbox-role="select-all">
+          <span class="ds-table-cell__icon" data-icon="checkbox" data-checkbox-state="unchecked" aria-hidden="true" role="img" aria-label="Select all rows"></span>
+          <span class="ds-table-cell__icon" data-icon="checkbox-selected" data-checkbox-state="checked" aria-hidden="true" role="img" aria-label="Select all rows"></span>
+          <span class="ds-table-cell__icon" data-icon="checkbox-semi-select" data-checkbox-state="indeterminate" aria-hidden="true" role="img" aria-label="Select all rows"></span>
+        </div>
+        <div class="ds-table-cell ds-table-header-cell" data-type="icon-cell" data-favourite-all data-saved="false" data-resize-min="content">
+          <button type="button" class="ds-table-header-cell__favourite-all-btn" aria-pressed="false" aria-label="Mark all as saved" data-tooltip="Save or unsave every row of this table">
+            <span class="ds-table-cell__icon" data-icon="save" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Name</span></div>
+        <div class="ds-table-header-cell">
+          <button type="button" class="ds-table-header-cell__sort-btn" data-sort-dir="none" aria-label="Sort by Type" data-tooltip="Sort rows by Type; click again to reverse">
+            <span class="ds-table-cell__text">Type</span>
+            <span class="ds-table-header-cell__sort-icon" data-icon="arrow-down" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="ds-table-header-cell">
+          <button type="button" class="ds-table-header-cell__sort-btn" data-sort-dir="none" aria-label="Sort by Apply Deadline" data-tooltip="Sort rows by Apply Deadline; click again to reverse">
+            <span class="ds-table-cell__text">Apply Deadline</span>
+            <span class="ds-table-header-cell__sort-icon" data-icon="arrow-down" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Summary</span></div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Full Description</span></div>
+        <div class="ds-table-header-cell" data-filter data-filter-multiple data-filter-values="filtered for_review analysed applied approved declined archived">
+          <div class="ds-dropdown">
+            <button type="button" class="ds-table-header-cell__filter-btn" aria-haspopup="listbox" aria-label="Filter by Status" data-filter-active="false" data-dropdown-trigger data-tooltip="Show only items with a chosen status">
+              <span class="ds-table-cell__text">Status</span>
+              <span class="ds-table-header-cell__sort-icon" data-icon="filter" aria-hidden="true"></span>
+            </button>
+            <div class="ds-dropdown-menu" role="listbox" data-multiple aria-multiselectable="true" hidden>
+              <button type="button" class="ds-dropdown-menu__item" role="option" data-value="" aria-selected="true">
+                <span class="ds-dropdown-menu__check" data-icon="checkbox" data-check="unchecked" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__check" data-icon="checkbox-selected" data-check="checked" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__check" data-icon="checkbox-semi-select" data-check="mixed" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__label">All</span>
+              </button>
+              <button type="button" class="ds-dropdown-menu__item" role="option" data-value="filtered" aria-selected="true">
+                <span class="ds-dropdown-menu__check" data-icon="checkbox" data-check="unchecked" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__check" data-icon="checkbox-selected" data-check="checked" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__check" data-icon="checkbox-semi-select" data-check="mixed" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__label">Filtered</span>
+              </button>
+              <button type="button" class="ds-dropdown-menu__item" role="option" data-value="for_review" aria-selected="true">
+                <span class="ds-dropdown-menu__check" data-icon="checkbox" data-check="unchecked" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__check" data-icon="checkbox-selected" data-check="checked" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__check" data-icon="checkbox-semi-select" data-check="mixed" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__label">For review</span>
+              </button>
+              <button type="button" class="ds-dropdown-menu__item" role="option" data-value="analysed" aria-selected="true">
+                <span class="ds-dropdown-menu__check" data-icon="checkbox" data-check="unchecked" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__check" data-icon="checkbox-selected" data-check="checked" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__check" data-icon="checkbox-semi-select" data-check="mixed" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__label">Analysed</span>
+              </button>
+              <button type="button" class="ds-dropdown-menu__item" role="option" data-value="applied" aria-selected="true">
+                <span class="ds-dropdown-menu__check" data-icon="checkbox" data-check="unchecked" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__check" data-icon="checkbox-selected" data-check="checked" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__check" data-icon="checkbox-semi-select" data-check="mixed" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__label">Applied</span>
+              </button>
+              <button type="button" class="ds-dropdown-menu__item" role="option" data-value="approved" aria-selected="true">
+                <span class="ds-dropdown-menu__check" data-icon="checkbox" data-check="unchecked" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__check" data-icon="checkbox-selected" data-check="checked" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__check" data-icon="checkbox-semi-select" data-check="mixed" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__label">Approved</span>
+              </button>
+              <button type="button" class="ds-dropdown-menu__item" role="option" data-value="declined" aria-selected="true">
+                <span class="ds-dropdown-menu__check" data-icon="checkbox" data-check="unchecked" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__check" data-icon="checkbox-selected" data-check="checked" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__check" data-icon="checkbox-semi-select" data-check="mixed" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__label">Declined</span>
+              </button>
+              <button type="button" class="ds-dropdown-menu__item" role="option" data-value="archived" aria-selected="true">
+                <span class="ds-dropdown-menu__check" data-icon="checkbox" data-check="unchecked" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__check" data-icon="checkbox-selected" data-check="checked" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__check" data-icon="checkbox-semi-select" data-check="mixed" aria-hidden="true"></span>
+                <span class="ds-dropdown-menu__label">Archived</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="ds-table-header-cell" data-resize-min="content"><span class="ds-table-cell__text">Link</span></div>
+        <div class="ds-table-header-cell"><span class="ds-table-cell__text">Notes</span></div>
+        <div class="ds-table-header-cell" data-resize-min="content">
+          <button type="button" class="ds-table-header-cell__sort-btn" data-sort-dir="none" aria-label="Sort by Updates" data-tooltip="Sort rows by Updates; click again to reverse">
+            <span class="ds-table-cell__text">Updates</span>
+            <span class="ds-table-header-cell__sort-icon" data-icon="arrow-down" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="ds-table-header-cell" data-resize-min="content"><span class="ds-table-cell__text">Actions</span></div>
+
+        <!-- Rows: rendered from /api/opportunities by for-you-rows.js -->
+      </div>
+      </div>
+      <div class="ds-detail-split__side" id="foryou-side" aria-live="polite">
+        <div class="ds-split__handle" role="separator" aria-orientation="vertical" tabindex="0" aria-label="Resize the details"></div>
+      </div>
+      </div>
+    </section>
+  </main>
+
+  <!--
+    Updates popup (Figma screen 27, spec 7.6; moved here from the Tracker page): one
+    shared overlay, retitled per row -- "Updates - <opportunity name>". Body is the
+    matching emails, newest first; Close is the only action.
+  -->
+  <!-- A record's details (for-you-pane.js fills the body): dis-system detail-pane. -->
+  <template id="foryou-detail-pane">
+    <section class="ds-pane ds-detail" aria-label="Details">
+      <div class="ds-pane__head">
+        <div class="ds-pane__heading">
+          <span class="ds-pane__title" data-emphasis="true"></span>
+          <span class="ds-pane__caption"></span>
+        </div>
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-pane-close><span class="ds-text-button__text">Close</span></button>
+      </div>
+      <div class="ds-pane__body"><div class="ds-pane__scroll"><div class="ds-detail__body"></div></div></div>
+    </section>
+  </template>
+
+  <div class="ds-popup-overlay" id="foryou-updates-popup" data-placement="center" hidden>
+    <div class="ds-popup" data-size="medium" role="dialog" aria-labelledby="foryou-updates-popup-title" tabindex="-1">
+      <div class="ds-popup__title" id="foryou-updates-popup-title">Updates</div>
+      <div class="ds-popup__body" data-type="text" id="foryou-updates-popup-body"></div>
+      <div class="ds-popup__bottom">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-popup-dismiss data-tooltip="Close this window">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Description popup (Figma 150:16627, SS4.6.1): 800px, the filled input at 300px. -->
+  <div class="ds-popup-overlay" id="foryou-description-popup" data-placement="center" hidden>
+    <div class="ds-popup" data-size="medium" role="dialog" aria-labelledby="foryou-description-popup-title" tabindex="-1">
+      <div class="ds-popup__title" id="foryou-description-popup-title">Add Description</div>
+      <div class="ds-popup__body" data-type="input">
+        <textarea class="ds-input" data-type="textarea" data-fill="filled" id="foryou-description-textarea" placeholder="Paste the description here"></textarea>
+      </div>
+      <div class="ds-popup__bottom">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-popup-dismiss data-tooltip="Close without making changes">Cancel</button>
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" id="foryou-description-save" data-popup-dismiss data-popup-confirm data-tooltip="Save the description">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    Shared "view" popup (SS4.6.2, generalized): every Full Description/
+    Summary "view" button across all 4 tables opens this same popup rather
+    than each field having its own -- title identifies which row/field was
+    opened, body is that field's own full (already-in-the-DOM, only CSS-
+    truncated) text. Replaces the old per-Summary-only popup, which the
+    previous For Review/Archived/Filtered tables didn't have a matching
+    version of.
+  -->
+  <div class="ds-popup-overlay" id="foryou-view-popup" data-placement="center" hidden>
+    <div class="ds-popup" data-size="medium" data-closable role="dialog" aria-labelledby="foryou-view-popup-title" tabindex="-1">
+      <div class="ds-popup__title" id="foryou-view-popup-title">Full Description</div>
+      <button type="button" class="ds-popup__close" aria-label="Close" data-popup-dismiss></button>
+      <div class="ds-popup__body" data-type="text">
+        <div id="foryou-view-text"></div>
+      </div>
+      <div class="ds-popup__bottom">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-popup-dismiss data-tooltip="Close this window">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    Confirmation popups (Figma 150:16695 Archive selected?, 150:16729 Analyse
+    with API call?): small (500px) and anchored under the button that opened
+    them, with a lighter dim than the modals. The destructive action is first
+    and red (status="error"); every action is regular weight, and the one
+    Ctrl+Enter / Cmd+Enter presses carries data-popup-confirm.
+  -->
+  <div class="ds-popup-overlay" id="foryou-archive-confirm-popup" data-placement="anchored" hidden>
+    <div class="ds-popup" data-size="small" role="dialog" aria-labelledby="foryou-archive-confirm-title" tabindex="-1">
+      <div class="ds-popup__title" id="foryou-archive-confirm-title">Archive selected?</div>
+      <div class="ds-popup__body" data-type="text">
+        <p id="foryou-archive-confirm-body"></p>
+      </div>
+      <div class="ds-popup__bottom">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="error" data-underline="dotted" id="foryou-archive-confirm-btn" data-popup-dismiss data-popup-confirm data-tooltip="Archive the selected items">Archive selected</button>
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-popup-dismiss data-tooltip="Close without making changes">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ds-popup-overlay" id="foryou-analyse-confirm-popup" data-placement="anchored" hidden>
+    <div class="ds-popup" data-size="small" role="dialog" aria-labelledby="foryou-analyse-confirm-title" tabindex="-1">
+      <div class="ds-popup__title" id="foryou-analyse-confirm-title">Analyse with API call?</div>
+      <div class="ds-popup__body" data-type="text">
+        <p id="foryou-analyse-confirm-body"></p>
+      </div>
+      <div class="ds-popup__bottom">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-popup-dismiss data-tooltip="Close without making changes">Cancel</button>
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" id="foryou-analyse-confirm-btn" data-popup-dismiss data-popup-confirm data-tooltip="Start the analysis">Analyse</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ds-popup-overlay" id="foryou-prepare-confirm-popup" data-placement="anchored" hidden>
+    <div class="ds-popup" data-size="small" role="dialog" aria-labelledby="foryou-prepare-confirm-title" tabindex="-1">
+      <div class="ds-popup__title" id="foryou-prepare-confirm-title">Run Claude API call?</div>
+      <div class="ds-popup__body" data-type="text">
+        <p id="foryou-prepare-confirm-body"></p>
+      </div>
+      <div class="ds-popup__bottom">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-popup-dismiss data-tooltip="Close without making changes">Cancel</button>
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" id="foryou-prepare-confirm-btn" data-popup-dismiss data-popup-confirm data-tooltip="Start preparing the application materials">Run</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- The rows come from the API, so the scripts below are deferred: for-you-rows.js
+       renders them, then runs the text/boot scripts in this order (the components
+       and arta.js wire the elements that exist when they run). -->
+  <script src="arta-api.js"></script>
+  <script src="arta-pdf.js"></script>
+  <script src="arta-boot.js"></script>
+  <script src="for-you-prefetch.js"></script>
+  <script src="for-you-rows.js"></script>
+  <script type="text/boot" src="dis-system/components/text-button/component.js"></script>
+  <script type="text/boot" src="dis-system/components/header-block/component.js"></script>
+  <script type="text/boot" src="dis-system/components/table-cell/component.js"></script>
+  <script type="text/boot" src="dis-system/components/table-row/component.js"></script>
+  <script type="text/boot" src="dis-system/components/input-dropdown/component.js"></script>
+  <script type="text/boot" src="dis-system/components/dropdown-menu/component.js"></script>
+  <script type="text/boot" src="dis-system/components/table-header-cell/component.js"></script>
+  <script type="text/boot" src="dis-system/components/popup/component.js"></script>
+  <script type="text/boot" src="dis-system/components/toast/component.js"></script>
+  <script type="text/boot" src="dis-system/components/tooltip/component.js"></script>
+  <script src="dis-system/local-components/detail-pane/component.js"></script>
+  <script type="text/boot" src="for-you-page.js"></script>
+  <script type="text/boot" src="for-you-pane.js"></script>
+  <script type="text/boot" src="for-you-sticky.js"></script>
+  <script type="text/boot" src="arta.js"></script>
+</body>
+</html>

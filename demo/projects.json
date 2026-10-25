@@ -1,0 +1,95 @@
+{
+  "notes": "The demo's projects, drawn into folders by demo/build.py (pictures by demo/paint.py, one .docx description each). Everything is made up: the artist, the works, the places, the photographers. A work's file name carries its title, medium and size; an exhibition folder's name carries its year and town, and each photo's name its photographer and venue (sources/image_meta.py). 'views' lists, per installation photo, the works hung in it by index; 'details' the works shown close up.",
+  "artist": "Jane-Roe",
+  "projects": [
+    {
+      "name": "Low Tide",
+      "style": "tide",
+      "seed": 101,
+      "description": [
+        "Low Tide is a series of paintings of one stretch of shore, made over a year of walks at the same hour. Each canvas starts from a drawing made on site and is finished in the studio from memory, so the bands of water, sand and sky are less a view than a record of how the place felt that morning.",
+        "The paintings are built in thin layers of oil, scraped back and painted again, the way the tide leaves and covers the same ground. Colour follows the season: grey and violet in winter, chalky greens in spring, the warm pinks of late summer evenings.",
+        "The series was first shown at Gallery One in Eastmoor in 2024, hung in the order the paintings were made, with the walking notes printed on a single sheet at the entrance."
+      ],
+      "works": [
+        {"title": "Low Tide I", "medium": "Oil on canvas", "size": [120, 90], "year": 2023},
+        {"title": "Low Tide II", "medium": "Oil on canvas", "size": [120, 90], "year": 2023},
+        {"title": "Low Tide III", "medium": "Oil on canvas", "size": [100, 80], "year": 2024},
+        {"title": "Morning, March", "medium": "Oil on canvas", "size": [60, 45], "year": 2024},
+        {"title": "Grey Water", "medium": "Oil on canvas", "size": [80, 60], "year": 2024},
+        {"title": "Low Tide IV", "medium": "Oil on canvas", "size": [150, 100], "year": 2024}
+      ],
+      "exhibitions": [
+        {"folder": "2024, Exposition in Eastmoor", "photographer": "Sam-Lens", "venue": "Gallery-One", "year": 2024,
+         "frame": "none", "views": [[0, 1], [2, 3, 4], [5]], "details": [2]}
+      ]
+    },
+    {
+      "name": "Paper Maps",
+      "style": "maps",
+      "seed": 202,
+      "description": [
+        "Paper Maps are drawings of places drawn from memory and then corrected on foot. Each sheet begins as a map of somewhere familiar, a station, a market, a school yard, made at the kitchen table without looking anything up.",
+        "The artist then walks the place with the drawing and adds what was missing in a second ink, so every map shows two things at once: the place as it was remembered and the place as it is. The gaps between the two are left visible.",
+        "The drawings were shown at Museum Four in Northbay in 2023, framed simply and hung in a single line at eye height."
+      ],
+      "works": [
+        {"title": "Map of the Pier", "medium": "Ink and pencil on paper", "size": [30, 40], "year": 2022},
+        {"title": "Map of the Allotments", "medium": "Ink and pencil on paper", "size": [30, 40], "year": 2022},
+        {"title": "Map of the Station", "medium": "Ink and pencil on paper", "size": [30, 40], "year": 2022},
+        {"title": "Map of a Short Walk", "medium": "Ink and watercolour on paper", "size": [30, 40], "year": 2023},
+        {"title": "Map of the Ferry Route", "medium": "Ink and pencil on paper", "size": [30, 40], "year": 2023},
+        {"title": "Map of the School Yard", "medium": "Ink and pencil on paper", "size": [30, 40], "year": 2023},
+        {"title": "Map of the Market", "medium": "Ink and watercolour on paper", "size": [30, 40], "year": 2023},
+        {"title": "Map of the Old Canal", "medium": "Ink and pencil on paper", "size": [30, 40], "year": 2023}
+      ],
+      "exhibitions": [
+        {"folder": "2023, Exposition in Northbay", "photographer": "Ana-Field", "venue": "Museum-Four", "year": 2023,
+         "frame": "mat", "views": [[0, 1, 2], [3, 4, 5], [6, 7]], "details": []}
+      ]
+    },
+    {
+      "name": "Woven Weather",
+      "style": "weave",
+      "seed": 303,
+      "description": [
+        "Woven Weather is a set of tapestries, each recording the weather of one day. Every row of the weave stands for an hour: its colour comes from the sky, its thickness from the wind, and a row is left loose when it rained.",
+        "The wool is dyed by hand with plants gathered near the studio, so the palette changes with the seasons in the same way the weather does. A day takes about a month to weave.",
+        "The tapestries were shown at Art Hall Two in Westfield in 2025, with the weather records for each day printed beside them."
+      ],
+      "works": [
+        {"title": "Weather, 1 January", "medium": "Hand-woven wool, plant dyes", "size": [80, 80], "year": 2024},
+        {"title": "Weather, 12 April", "medium": "Hand-woven wool, plant dyes", "size": [80, 80], "year": 2024},
+        {"title": "Weather, 30 June", "medium": "Hand-woven wool and linen, plant dyes", "size": [60, 90], "year": 2024},
+        {"title": "Weather, 5 September", "medium": "Hand-woven wool, plant dyes", "size": [80, 80], "year": 2025},
+        {"title": "Weather, 21 December", "medium": "Hand-woven wool, plant dyes", "size": [100, 140], "year": 2025}
+      ],
+      "exhibitions": [
+        {"folder": "2025, Exposition in Westfield", "photographer": "Sam-Lens", "venue": "Art-Hall-Two", "year": 2025,
+         "frame": "none", "views": [[0, 1], [2, 3], [4]], "details": [4]}
+      ]
+    },
+    {
+      "name": "Rooms",
+      "style": "rooms",
+      "seed": 404,
+      "description": [
+        "Rooms is a series of small paintings of rooms seen through doorways: a kitchen at night, a hallway, a room kept for guests. No furniture is painted, only the colours of the walls and the light between them.",
+        "Each panel is painted from a photograph of a real room and then simplified until only the nested rectangles of doors and walls remain. The soft edges come from sanding the acrylic between layers.",
+        "The paintings were shown at Club Three in Eastmoor in 2022, in a narrow corridor so that visitors saw them one at a time."
+      ],
+      "works": [
+        {"title": "Room with a Window", "medium": "Acrylic on panel", "size": [50, 60], "year": 2021},
+        {"title": "Kitchen at Night", "medium": "Acrylic on panel", "size": [50, 60], "year": 2021},
+        {"title": "Hallway", "medium": "Acrylic on panel", "size": [50, 60], "year": 2021},
+        {"title": "Room for Guests", "medium": "Acrylic on panel", "size": [50, 60], "year": 2022},
+        {"title": "Stairwell", "medium": "Acrylic on panel", "size": [50, 60], "year": 2022},
+        {"title": "Back Room", "medium": "Acrylic on panel", "size": [50, 60], "year": 2022}
+      ],
+      "exhibitions": [
+        {"folder": "2022, Exposition in Eastmoor", "photographer": "Ana-Field", "venue": "Club-Three", "year": 2022,
+         "frame": "none", "views": [[0, 1, 2], [3, 4, 5]], "details": [1]}
+      ]
+    }
+  ]
+}

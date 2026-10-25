@@ -1,0 +1,498 @@
+{
+  "blocks": [
+    {
+      "id": "1acf32a6-fad8-47fb-886d-8d21c56706d9",
+      "kind": "heading",
+      "text": "JANE ROE"
+    },
+    {
+      "id": "2e25b7bb-5d58-4888-be50-9d1002fca90d",
+      "kind": "text",
+      "text": "1986 born in Westfield | ZZ\nLives and works in Eastmoor | YY"
+    },
+    {
+      "id": "f6dd317e-646d-4c2c-af30-29831f9d7c68",
+      "kind": "heading",
+      "text": "ABOUT"
+    },
+    {
+      "id": "6709cbb2-9c0b-48fa-895e-240f608c2b5e",
+      "kind": "text",
+      "text": "Jane Roe is a painter and textile artist. She works with tides, weather and woven structures, and with the slow, repeated gestures that both painting and weaving ask for."
+    },
+    {
+      "id": "b8cb0198-439d-4eea-a92d-52471a3e1319",
+      "kind": "heading",
+      "text": "EDUCATION"
+    },
+    {
+      "id": "7548dc53-ef9c-43e3-b4d7-367235a6297d",
+      "kind": "text",
+      "text": "2023\tSummer workshop \"Natural Dyes\", Weavers' Guild, Westfield | ZZ"
+    },
+    {
+      "id": "5ac2e91f-ba79-4de8-a44a-cb3f20494ef3",
+      "kind": "text",
+      "text": "2021\tStudio Fellowship, Riverside Art Institute, Eastmoor | YY"
+    },
+    {
+      "id": "12269691-2f40-4bcf-a248-e99226f99b6a",
+      "kind": "text",
+      "text": "2019\tOnline course \"Writing about your own work\", Open Studio Network"
+    },
+    {
+      "id": "dc09ed9a-9585-40e0-9c6a-d8fe891bcc36",
+      "kind": "text",
+      "text": "2016\tMFA in Painting, Eastmoor School of Art | YY"
+    },
+    {
+      "id": "1c9c9efa-8266-4510-a0c8-1f0a2305b38a",
+      "kind": "text",
+      "text": "2014\tExchange semester, Coastal Art Academy, Westfield | ZZ"
+    },
+    {
+      "id": "7aa878e8-b953-49ab-a912-6987e8fdb1d3",
+      "kind": "text",
+      "text": "2011\tBA in Textile Design, Westfield University | ZZ"
+    },
+    {
+      "id": "74c4f48f-7e9a-4c1b-9ff0-ac56c6b91040",
+      "kind": "text",
+      "text": "2008\tFoundation year, City College of Art, Westfield | ZZ"
+    },
+    {
+      "id": "9be1ba8f-ec08-4197-a39a-30d2bd7098a1",
+      "kind": "text",
+      "text": "2007\tEvening classes in life drawing, Harbour Hall, Westfield | ZZ"
+    },
+    {
+      "id": "6e83b5e5-d253-4ff4-a44a-8ad76c19c8c0",
+      "kind": "heading",
+      "text": "PROFESSIONAL EXPERIENCE"
+    },
+    {
+      "id": "3f7cb2d4-38e6-4771-9c1e-65ed1b595e11",
+      "kind": "text",
+      "text": "2025\tVisiting tutor, Textile Department, Eastmoor School of Art | YY"
+    },
+    {
+      "id": "815f76fc-f5bc-47f9-aa8f-ce2565764579",
+      "kind": "text",
+      "text": "2024\tWorkshop, \"Weaving a weather diary\", Library of Eastmoor | YY"
+    },
+    {
+      "id": "d4ec475d-4185-4917-8f75-687eb8c5475a",
+      "kind": "text",
+      "text": "2024\tTalk, \"Painting the same view for a year\", Gallery One, Eastmoor | YY"
+    },
+    {
+      "id": "581c0f44-120f-4ccf-9824-ef36630951eb",
+      "kind": "text",
+      "text": "2023\tPanel, \"Studios for artists with children\", Riverside Art Institute, Eastmoor | YY"
+    },
+    {
+      "id": "f0566120-46c6-495b-b6fc-76493684861a",
+      "kind": "text",
+      "text": "2022\tWorkshop, \"Colour from plants\", Community Garden, Northbay | XX"
+    },
+    {
+      "id": "78169f98-d2f3-48c2-ae87-611e87e10dba",
+      "kind": "text",
+      "text": "2020\tStudio assistant to a sculptor, Eastmoor | YY"
+    },
+    {
+      "id": "a6afe5f0-03f1-4139-a687-29238a514a50",
+      "kind": "text",
+      "text": "2018\tGallery educator, Museum Four, Northbay | XX"
+    },
+    {
+      "id": "ac21a573-7d9c-41ce-b373-4446bbe4a712",
+      "kind": "text",
+      "text": "2015\tTeaching assistant, Painting Department, Eastmoor School of Art | YY"
+    },
+    {
+      "id": "626f516d-4b0d-4d1d-95b7-67b067104aef",
+      "kind": "heading",
+      "text": "SOLO PROJECTS"
+    },
+    {
+      "id": "6ac612bd-266a-42c4-ba28-0a3ce7b5f43d",
+      "kind": "text",
+      "text": "2025\texhibition \"Woven Weather\", Art Hall Two, Westfield | ZZ"
+    },
+    {
+      "id": "5b7dd49a-7daf-4810-b049-f6175598d529",
+      "kind": "text",
+      "text": "2024\texhibition \"Low Tide\", Gallery One, Eastmoor | YY\nexhibition \"Low Tide\" (second chapter), Harbour Centre, Northbay | XX"
+    },
+    {
+      "id": "e05a0344-6763-4e68-b5dd-700ab846bed1",
+      "kind": "text",
+      "text": "2023\texhibition \"Paper Maps\", Museum Four, Northbay | XX"
+    },
+    {
+      "id": "15d56f95-6d30-4d94-a7ff-ce93cca4b03e",
+      "kind": "text",
+      "text": "2022\texhibition \"Rooms\", Club Three, Eastmoor | YY\nstudio exhibition \"Rooms (sketches)\", Elm Street 12, Eastmoor | YY"
+    },
+    {
+      "id": "69ad9046-1285-487f-8c0e-fd300246f911",
+      "kind": "text",
+      "text": "2020\texhibition \"Salt Marsh\", Small Gallery, Westfield | ZZ"
+    },
+    {
+      "id": "945e52d5-a100-4a45-81db-e6b8843c3ab9",
+      "kind": "text",
+      "text": "2018\texhibition \"Night Kitchen\", Harbour Centre, Northbay | XX"
+    },
+    {
+      "id": "19d90001-2280-4cf5-885e-7a80707cbc12",
+      "kind": "text",
+      "text": "2016\tMFA degree show \"Lamp Black\", Eastmoor School of Art | YY"
+    },
+    {
+      "id": "d66e6e39-d620-4402-a1e0-a4d67c43e5ca",
+      "kind": "heading",
+      "text": "GROUP PROJECTS (SELECTION)"
+    },
+    {
+      "id": "f38f00c5-b171-48df-a62b-668809478bff",
+      "kind": "text",
+      "text": "2025\texhibition \"The Long Table\", Gallery One, Eastmoor | YY\nexhibition \"Soft Machines\", Art Hall Two, Westfield | ZZ"
+    },
+    {
+      "id": "ecd63bfb-8518-4ca5-99cc-785ffc0a9ca1",
+      "kind": "text",
+      "text": "2024\texhibition \"Weather Reports\", Museum Four, Northbay | XX\nexhibition \"Fellows' Choice\", Riverside Art Institute, Eastmoor | YY\nexhibition \"Warp and Weft\", Textile Museum, Westfield | ZZ\nopen studios, Elm Street Studios, Eastmoor | YY\nauction \"Studio Fund\", in support of a local studio building, Auction House Five, Eastmoor | YY"
+    },
+    {
+      "id": "e18f5f3f-f326-4360-b559-b71ec5f56fcd",
+      "kind": "text",
+      "text": "2023\texhibition \"Small Hours\", Club Three, Eastmoor | YY\nexhibition \"Drawn Lines\", Centre for Contemporary Art, Northbay | XX\nart fair \"Paper & Thread\", Hotel Nine, Westfield | ZZ\nexhibition \"Shore\", Corridor Gallery, Northbay | XX"
+    },
+    {
+      "id": "d279f7e3-dd10-41f0-a073-ed80cbf9c41e",
+      "kind": "text",
+      "text": "2022\texhibition \"Close to Home\", Church Hall, Eastmoor | YY\nexhibition \"Signal\", with a sound artist, Gallery Zero, Westfield | ZZ\nexhibition \"Second Look\", Art Space 31, Northbay | XX"
+    },
+    {
+      "id": "4c8ed0f6-92ac-4a92-811a-738ca023007b",
+      "kind": "text",
+      "text": "2021\texhibition \"Cloth\", Textile Museum, Westfield | ZZ\nexhibition \"Hall 14 Open\", Hall 14, Westfield | ZZ"
+    },
+    {
+      "id": "32696bcf-c5b2-4ad1-821c-82aac5555766",
+      "kind": "text",
+      "text": "2019\texhibition \"Young Painters\", Museum Four, Northbay | XX"
+    },
+    {
+      "id": "c392b336-82bd-4f14-bd1e-b96435141c00",
+      "kind": "text",
+      "text": "2017\texhibition \"New Graduates\", Gallery Zero, Westfield | ZZ"
+    },
+    {
+      "id": "4ed0ad69-ca73-4468-80fe-c1f8c121a2dd",
+      "kind": "heading",
+      "text": "GRANTS, AWARDS AND SCHOLARSHIPS"
+    },
+    {
+      "id": "bf200a9a-09b2-4327-af07-d9e8657a2c96",
+      "kind": "text",
+      "text": "2025\tMobility grant, Example Culture Fund"
+    },
+    {
+      "id": "a9948030-200c-45eb-ad30-90b8d75a11c6",
+      "kind": "text",
+      "text": "2024\tWorking grant, City of Eastmoor"
+    },
+    {
+      "id": "8c8ff6a5-13a6-48af-9194-f984d35f84d4",
+      "kind": "text",
+      "text": "2024\tShortlist, Textile Art Prize"
+    },
+    {
+      "id": "96486fdd-5987-4b40-9185-2f985ba5ca1f",
+      "kind": "text",
+      "text": "2023\tProject grant, Riverside Foundation"
+    },
+    {
+      "id": "3360acb8-920e-49b0-8abe-e50d48307137",
+      "kind": "text",
+      "text": "2022\tMaterials grant, Weavers' Guild"
+    },
+    {
+      "id": "fa1d968e-4fb3-4111-b296-2c00512e0853",
+      "kind": "text",
+      "text": "2021\tStudio Fellowship, Riverside Art Institute"
+    },
+    {
+      "id": "cadc9db0-b44e-4839-9f9f-ae05421b18d6",
+      "kind": "text",
+      "text": "2016\tGraduate Prize, Eastmoor School of Art"
+    },
+    {
+      "id": "733227ba-9efc-4ac1-bebd-969702bcd889",
+      "kind": "text",
+      "text": "2014\tExchange scholarship, Coastal Art Academy"
+    },
+    {
+      "id": "774bd80f-cb75-410b-af45-04f712ab8c7c",
+      "kind": "heading",
+      "text": "WORKS IN PUBLIC COLLECTIONS"
+    },
+    {
+      "id": "45ff42e6-1bd6-4745-b38e-3ee7e8464552",
+      "kind": "text",
+      "text": "Museum Four, Northbay | XX\nTextile Museum, Westfield | ZZ\nCollection of the City of Eastmoor | YY"
+    },
+    {
+      "id": "4591f544-0dbe-4b32-b060-49bb8a572f3d",
+      "kind": "heading",
+      "text": "RESIDENCIES"
+    },
+    {
+      "id": "38274415-476a-4976-9ef5-b75feed4ba94",
+      "kind": "text",
+      "text": "2025\tresidency \"Coastal Residency\", Westfield | ZZ"
+    },
+    {
+      "id": "283ecaea-4a7e-4cdc-8fb1-4f44ea8c635f",
+      "kind": "text",
+      "text": "2024\tresidency \"Paper Mill\", Westfield | ZZ"
+    },
+    {
+      "id": "7a51c229-549c-4215-9474-c4a2b357e03f",
+      "kind": "text",
+      "text": "2023\tresidency \"Island Studio\", Northbay | XX\nresidency \"Mill Pond\", Westfield | ZZ"
+    },
+    {
+      "id": "5f3cd959-f7b3-4d29-b6a3-5d3e89175ba4",
+      "kind": "text",
+      "text": "2021\tresidency \"Riverside Studios\", Eastmoor | YY"
+    },
+    {
+      "id": "0d9a9240-a4b5-43b7-b296-a6ead345beda",
+      "kind": "text",
+      "text": "2019\tresidency \"Saltworks\", Westfield | ZZ"
+    },
+    {
+      "id": "2edaf0d8-070c-4dca-a656-e0ff4236149d",
+      "kind": "heading",
+      "text": "PUBLICATIONS"
+    },
+    {
+      "id": "8f50772c-8df0-4d25-83c0-96f7f567f6fc",
+      "kind": "text",
+      "text": "2024\tLow Tide, exh. cat., Gallery One, Eastmoor"
+    },
+    {
+      "id": "bc9d88af-5aa5-4a45-b70f-9b753e7cb08c",
+      "kind": "text",
+      "text": "2023\tPaper Maps, artist's book, Small Press Eastmoor"
+    },
+    {
+      "id": "43968e9d-91a4-4c23-a5ef-f0139dd4907c",
+      "kind": "text",
+      "text": "2022\tRooms, exh. leaflet, Club Three, Eastmoor"
+    },
+    {
+      "id": "8a7d1c94-a436-460b-a71a-56a4c21bfabf",
+      "kind": "text",
+      "text": "2021\tExample Quarterly # 12, Northbay"
+    },
+    {
+      "id": "990ffde0-fb9f-49de-aebc-bfe475cd07f7",
+      "kind": "heading",
+      "text": "PRESS (SELECTION)"
+    },
+    {
+      "id": "252d37de-02a1-4a7b-836c-bbce65357f88",
+      "kind": "text",
+      "text": "2024\t\"A painter of slow things\", by A. Writer, Example Daily"
+    },
+    {
+      "id": "d62a457a-9fc3-4716-8d06-e1524671bf89",
+      "kind": "text",
+      "text": "2023\t\"Weaving the weather\", by B. Critic, Art Weekly"
+    },
+    {
+      "id": "17caee8b-7f46-4a65-b8cb-d6282f528cba",
+      "kind": "text",
+      "text": "2022\t\"Rooms with no doors\", by C. Reporter, City Paper"
+    },
+    {
+      "id": "16170c4b-ec8a-402c-8224-9250a2fc243b",
+      "kind": "heading",
+      "text": "CONTACT"
+    },
+    {
+      "id": "ec01b2dc-a239-42ff-8fac-90136a5cd649",
+      "kind": "text",
+      "text": "+00 000 0000000\njane.roe@example.org\nWebsite: example.org/jane-roe"
+    }
+  ],
+  "referents": [
+    {
+      "id": "short",
+      "name": "Short CV",
+      "blocks": [
+        "1acf32a6-fad8-47fb-886d-8d21c56706d9",
+        "2e25b7bb-5d58-4888-be50-9d1002fca90d",
+        "f6dd317e-646d-4c2c-af30-29831f9d7c68",
+        "6709cbb2-9c0b-48fa-895e-240f608c2b5e",
+        "b8cb0198-439d-4eea-a92d-52471a3e1319",
+        "7548dc53-ef9c-43e3-b4d7-367235a6297d",
+        "5ac2e91f-ba79-4de8-a44a-cb3f20494ef3",
+        "12269691-2f40-4bcf-a248-e99226f99b6a",
+        "dc09ed9a-9585-40e0-9c6a-d8fe891bcc36",
+        "1c9c9efa-8266-4510-a0c8-1f0a2305b38a",
+        "7aa878e8-b953-49ab-a912-6987e8fdb1d3",
+        "74c4f48f-7e9a-4c1b-9ff0-ac56c6b91040",
+        "9be1ba8f-ec08-4197-a39a-30d2bd7098a1",
+        "626f516d-4b0d-4d1d-95b7-67b067104aef",
+        "6ac612bd-266a-42c4-ba28-0a3ce7b5f43d",
+        "5b7dd49a-7daf-4810-b049-f6175598d529",
+        "e05a0344-6763-4e68-b5dd-700ab846bed1",
+        "15d56f95-6d30-4d94-a7ff-ce93cca4b03e",
+        "69ad9046-1285-487f-8c0e-fd300246f911",
+        "945e52d5-a100-4a45-81db-e6b8843c3ab9",
+        "19d90001-2280-4cf5-885e-7a80707cbc12",
+        "16170c4b-ec8a-402c-8224-9250a2fc243b",
+        "ec01b2dc-a239-42ff-8fac-90136a5cd649"
+      ]
+    },
+    {
+      "id": "middle",
+      "name": "Middle CV",
+      "blocks": [
+        "1acf32a6-fad8-47fb-886d-8d21c56706d9",
+        "2e25b7bb-5d58-4888-be50-9d1002fca90d",
+        "f6dd317e-646d-4c2c-af30-29831f9d7c68",
+        "6709cbb2-9c0b-48fa-895e-240f608c2b5e",
+        "b8cb0198-439d-4eea-a92d-52471a3e1319",
+        "7548dc53-ef9c-43e3-b4d7-367235a6297d",
+        "5ac2e91f-ba79-4de8-a44a-cb3f20494ef3",
+        "12269691-2f40-4bcf-a248-e99226f99b6a",
+        "dc09ed9a-9585-40e0-9c6a-d8fe891bcc36",
+        "1c9c9efa-8266-4510-a0c8-1f0a2305b38a",
+        "7aa878e8-b953-49ab-a912-6987e8fdb1d3",
+        "74c4f48f-7e9a-4c1b-9ff0-ac56c6b91040",
+        "9be1ba8f-ec08-4197-a39a-30d2bd7098a1",
+        "6e83b5e5-d253-4ff4-a44a-8ad76c19c8c0",
+        "3f7cb2d4-38e6-4771-9c1e-65ed1b595e11",
+        "815f76fc-f5bc-47f9-aa8f-ce2565764579",
+        "d4ec475d-4185-4917-8f75-687eb8c5475a",
+        "581c0f44-120f-4ccf-9824-ef36630951eb",
+        "f0566120-46c6-495b-b6fc-76493684861a",
+        "78169f98-d2f3-48c2-ae87-611e87e10dba",
+        "a6afe5f0-03f1-4139-a687-29238a514a50",
+        "ac21a573-7d9c-41ce-b373-4446bbe4a712",
+        "626f516d-4b0d-4d1d-95b7-67b067104aef",
+        "6ac612bd-266a-42c4-ba28-0a3ce7b5f43d",
+        "5b7dd49a-7daf-4810-b049-f6175598d529",
+        "e05a0344-6763-4e68-b5dd-700ab846bed1",
+        "15d56f95-6d30-4d94-a7ff-ce93cca4b03e",
+        "69ad9046-1285-487f-8c0e-fd300246f911",
+        "945e52d5-a100-4a45-81db-e6b8843c3ab9",
+        "19d90001-2280-4cf5-885e-7a80707cbc12",
+        "d66e6e39-d620-4402-a1e0-a4d67c43e5ca",
+        "f38f00c5-b171-48df-a62b-668809478bff",
+        "ecd63bfb-8518-4ca5-99cc-785ffc0a9ca1",
+        "e18f5f3f-f326-4360-b559-b71ec5f56fcd",
+        "d279f7e3-dd10-41f0-a073-ed80cbf9c41e",
+        "4c8ed0f6-92ac-4a92-811a-738ca023007b",
+        "32696bcf-c5b2-4ad1-821c-82aac5555766",
+        "c392b336-82bd-4f14-bd1e-b96435141c00",
+        "4ed0ad69-ca73-4468-80fe-c1f8c121a2dd",
+        "bf200a9a-09b2-4327-af07-d9e8657a2c96",
+        "a9948030-200c-45eb-ad30-90b8d75a11c6",
+        "8c8ff6a5-13a6-48af-9194-f984d35f84d4",
+        "96486fdd-5987-4b40-9185-2f985ba5ca1f",
+        "3360acb8-920e-49b0-8abe-e50d48307137",
+        "fa1d968e-4fb3-4111-b296-2c00512e0853",
+        "cadc9db0-b44e-4839-9f9f-ae05421b18d6",
+        "733227ba-9efc-4ac1-bebd-969702bcd889",
+        "4591f544-0dbe-4b32-b060-49bb8a572f3d",
+        "38274415-476a-4976-9ef5-b75feed4ba94",
+        "283ecaea-4a7e-4cdc-8fb1-4f44ea8c635f",
+        "7a51c229-549c-4215-9474-c4a2b357e03f",
+        "5f3cd959-f7b3-4d29-b6a3-5d3e89175ba4",
+        "0d9a9240-a4b5-43b7-b296-a6ead345beda",
+        "16170c4b-ec8a-402c-8224-9250a2fc243b",
+        "ec01b2dc-a239-42ff-8fac-90136a5cd649"
+      ]
+    },
+    {
+      "id": "full",
+      "name": "Full CV",
+      "blocks": [
+        "1acf32a6-fad8-47fb-886d-8d21c56706d9",
+        "2e25b7bb-5d58-4888-be50-9d1002fca90d",
+        "f6dd317e-646d-4c2c-af30-29831f9d7c68",
+        "6709cbb2-9c0b-48fa-895e-240f608c2b5e",
+        "b8cb0198-439d-4eea-a92d-52471a3e1319",
+        "7548dc53-ef9c-43e3-b4d7-367235a6297d",
+        "5ac2e91f-ba79-4de8-a44a-cb3f20494ef3",
+        "12269691-2f40-4bcf-a248-e99226f99b6a",
+        "dc09ed9a-9585-40e0-9c6a-d8fe891bcc36",
+        "1c9c9efa-8266-4510-a0c8-1f0a2305b38a",
+        "7aa878e8-b953-49ab-a912-6987e8fdb1d3",
+        "74c4f48f-7e9a-4c1b-9ff0-ac56c6b91040",
+        "9be1ba8f-ec08-4197-a39a-30d2bd7098a1",
+        "6e83b5e5-d253-4ff4-a44a-8ad76c19c8c0",
+        "3f7cb2d4-38e6-4771-9c1e-65ed1b595e11",
+        "815f76fc-f5bc-47f9-aa8f-ce2565764579",
+        "d4ec475d-4185-4917-8f75-687eb8c5475a",
+        "581c0f44-120f-4ccf-9824-ef36630951eb",
+        "f0566120-46c6-495b-b6fc-76493684861a",
+        "78169f98-d2f3-48c2-ae87-611e87e10dba",
+        "a6afe5f0-03f1-4139-a687-29238a514a50",
+        "ac21a573-7d9c-41ce-b373-4446bbe4a712",
+        "626f516d-4b0d-4d1d-95b7-67b067104aef",
+        "6ac612bd-266a-42c4-ba28-0a3ce7b5f43d",
+        "5b7dd49a-7daf-4810-b049-f6175598d529",
+        "e05a0344-6763-4e68-b5dd-700ab846bed1",
+        "15d56f95-6d30-4d94-a7ff-ce93cca4b03e",
+        "69ad9046-1285-487f-8c0e-fd300246f911",
+        "945e52d5-a100-4a45-81db-e6b8843c3ab9",
+        "19d90001-2280-4cf5-885e-7a80707cbc12",
+        "d66e6e39-d620-4402-a1e0-a4d67c43e5ca",
+        "f38f00c5-b171-48df-a62b-668809478bff",
+        "ecd63bfb-8518-4ca5-99cc-785ffc0a9ca1",
+        "e18f5f3f-f326-4360-b559-b71ec5f56fcd",
+        "d279f7e3-dd10-41f0-a073-ed80cbf9c41e",
+        "4c8ed0f6-92ac-4a92-811a-738ca023007b",
+        "32696bcf-c5b2-4ad1-821c-82aac5555766",
+        "c392b336-82bd-4f14-bd1e-b96435141c00",
+        "4ed0ad69-ca73-4468-80fe-c1f8c121a2dd",
+        "bf200a9a-09b2-4327-af07-d9e8657a2c96",
+        "a9948030-200c-45eb-ad30-90b8d75a11c6",
+        "8c8ff6a5-13a6-48af-9194-f984d35f84d4",
+        "96486fdd-5987-4b40-9185-2f985ba5ca1f",
+        "3360acb8-920e-49b0-8abe-e50d48307137",
+        "fa1d968e-4fb3-4111-b296-2c00512e0853",
+        "cadc9db0-b44e-4839-9f9f-ae05421b18d6",
+        "733227ba-9efc-4ac1-bebd-969702bcd889",
+        "774bd80f-cb75-410b-af45-04f712ab8c7c",
+        "45ff42e6-1bd6-4745-b38e-3ee7e8464552",
+        "4591f544-0dbe-4b32-b060-49bb8a572f3d",
+        "38274415-476a-4976-9ef5-b75feed4ba94",
+        "283ecaea-4a7e-4cdc-8fb1-4f44ea8c635f",
+        "7a51c229-549c-4215-9474-c4a2b357e03f",
+        "5f3cd959-f7b3-4d29-b6a3-5d3e89175ba4",
+        "0d9a9240-a4b5-43b7-b296-a6ead345beda",
+        "2edaf0d8-070c-4dca-a656-e0ff4236149d",
+        "8f50772c-8df0-4d25-83c0-96f7f567f6fc",
+        "bc9d88af-5aa5-4a45-b70f-9b753e7cb08c",
+        "43968e9d-91a4-4c23-a5ef-f0139dd4907c",
+        "8a7d1c94-a436-460b-a71a-56a4c21bfabf",
+        "990ffde0-fb9f-49de-aebc-bfe475cd07f7",
+        "252d37de-02a1-4a7b-836c-bbce65357f88",
+        "d62a457a-9fc3-4716-8d06-e1524671bf89",
+        "17caee8b-7f46-4a65-b8cb-d6282f528cba",
+        "16170c4b-ec8a-402c-8224-9250a2fc243b",
+        "ec01b2dc-a239-42ff-8fac-90136a5cd649"
+      ]
+    }
+  ]
+}

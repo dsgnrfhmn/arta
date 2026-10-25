@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Theme flash-fix: see the comment in for-you.html. -->
+  <script src="arta-theme.js"></script>
+  <script src="arta-print.js"></script>
+  <title>art-agent — Portfolio</title>
+  <link rel="stylesheet" href="dis-system/tokens/output.css">
+  <link rel="stylesheet" href="dis-system/components/text-button/style.css">
+  <link rel="stylesheet" href="dis-system/components/nav-bar/style.css">
+  <link rel="stylesheet" href="dis-system/components/sidebar-list/style.css">
+  <link rel="stylesheet" href="dis-system/components/sidebar-item/style.css">
+  <link rel="stylesheet" href="dis-system/components/page-head/style.css">
+  <link rel="stylesheet" href="dis-system/components/pane/style.css">
+  <link rel="stylesheet" href="dis-system/components/empty-state/style.css">
+  <link rel="stylesheet" href="dis-system/components/popup-step/style.css">
+  <link rel="stylesheet" href="dis-system/components/radio/style.css">
+  <link rel="stylesheet" href="dis-system/components/gallery/style.css">
+  <link rel="stylesheet" href="dis-system/components/gallery-image/style.css">
+  <link rel="stylesheet" href="dis-system/components/table-cell/style.css">
+  <link rel="stylesheet" href="dis-system/components/table-row/style.css">
+  <link rel="stylesheet" href="dis-system/components/table-header-cell/style.css">
+  <link rel="stylesheet" href="dis-system/components/input-dropdown/style.css">
+  <link rel="stylesheet" href="dis-system/components/dropdown-menu/style.css">
+  <link rel="stylesheet" href="dis-system/components/context-menu/style.css">
+  <link rel="stylesheet" href="dis-system/components/paper-preview/style.css">
+  <link rel="stylesheet" href="dis-system/local-components/ai-edit-bar/style.css">
+  <link rel="stylesheet" href="dis-system/fonts/bodoni-moda.css">
+  <link rel="stylesheet" href="dis-system/fonts/karla.css">
+  <link rel="stylesheet" href="dis-system/local-components/portfolio-sheet/style.css">
+  <link rel="stylesheet" href="dis-system/local-components/layout-picker/style.css">
+  <link rel="stylesheet" href="dis-system/local-components/zoom-buttons/style.css">
+  <link rel="stylesheet" href="dis-system/components/input/style.css">
+  <link rel="stylesheet" href="dis-system/components/popup/style.css">
+  <link rel="stylesheet" href="dis-system/components/toast/style.css">
+  <link rel="stylesheet" href="dis-system/components/tooltip/style.css">
+  <link rel="stylesheet" href="dis-system/components/table-header-actions/style.css">
+  <link rel="stylesheet" href="dis-system/components/divider/style.css">
+  <link rel="stylesheet" href="dis-system/site.css">
+  <link rel="stylesheet" href="dis-system/components/fade-in/style.css">
+  <link rel="stylesheet" href="dis-system/components/loading-veil/style.css">
+  <script src="dis-system/components/fade-in/component.js"></script>
+  <link rel="stylesheet" href="dis-system/components/skeleton/style.css">
+  <script src="dis-system/components/skeleton/component.js"></script>
+  <link rel="stylesheet" href="arta.css">
+  <style>
+    /*
+      Portfolio rebuilt to Figma (dsgnrfhmn, 2026-09-19, screen 10 / node
+      150:16217, "portfolio_saved-set-empty-state"; siblings are
+      screens 11-19 in design-update/screens/). Page-local on purpose, the
+      same way for-you.html and cv.html carry their own copy of the
+      flat Figma table: the shared table / sidebar / header components have
+      not been through the Figma pass, so this page owns its layout until
+      each piece is pushed into dis-system (needs dsgnrfhmn's confirmation per
+      CLAUDE.md, one component at a time). Nothing here edits dis-system.
+
+      Frame (1920x1095): 60px nav, then a 1035px content row -- a 280px
+      sidebar, and a 1640px main column made of a 60px set header over two
+      equal 820px panes ("Included projects" table | "Preview"). Each pane
+      has its own 56px header row. Nothing scrolls at page level: the
+      table pane and the preview pane scroll on their own, so the sidebar
+      and headers stay put.
+
+      Measurements are Figma's, composed from the spacing scale where a
+      token exists: 10px cell padding, 44px row, 11px button padding (10px
+      + the 1px border-thin that table cells lose), 20px header side padding.
+    */
+    html, body {
+      height: 100%;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Page color: base/150, the fill of Figma's screen frame (visible under
+       the table rows and around the preview pages). Light theme only, like
+       For You: dark keeps dis-system's own until the dark export. */
+    :root:not([data-theme="dark"]) body {
+      background-color: var(--ds-color-base-150);
+    }
+
+    .portfolio-shell {
+      --portfolio-cell-pad: calc(var(--ds-spacing-3) + var(--ds-spacing-1));
+      --portfolio-row-h: calc(var(--ds-spacing-9) + var(--ds-spacing-2));
+      --portfolio-btn-px: calc(var(--ds-spacing-4) - var(--ds-border-width-thin));
+      --portfolio-hairline: var(--ds-border-width-thin) solid var(--ds-color-border-table);
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* Sticky chrome: New Full Set sticks right under New Empty Set (one 45px create
+       row), so the two stay stacked while the list scrolls. Local by dsgnrfhmn's choice
+       (2026-10-24), not in dis-system's sidebar-list. */
+    #portfolio-sidebar-list > .ds-sidebar-item[data-role="create"] + .ds-sidebar-item[data-role="create"] {
+      top: calc(var(--ds-spacing-row) + var(--ds-border-width-thin));
+    }
+
+    /* ---- Text buttons in this page (Figma: 11px padding around the label,
+       hover brackets hung inside that box so the box never changes size).
+       Same measurements as for-you.html's header buttons. ---- */
+
+    /* ---- Main column ---- */
+    /* Included projects one third, Preview two thirds (dsgnrfhmn, 2026-10-24); dragging the
+       handle between them still sets any share (pane's data-resized). */
+    .portfolio-pane--preview:not([data-resized]) {
+      flex-grow: 2;
+    }
+
+    main.portfolio-main {
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      padding: 0;
+      gap: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Included projects table (Figma 150:16226) ----
+       Columns: 44px checkbox | 44px drag | Name | Details | 139px row actions. Rows are
+       display:contents so their cells fall into the same grid as the header. */
+    .portfolio-table .ds-table-row {
+      display: contents;
+    }
+
+    /* The Add Project row: cells in the table's own grid, like a project row, but not a
+       .ds-table-row, so the dark theme's grey-until-hover for row buttons does not apply
+       (the button is always active). */
+    .portfolio-table .portfolio-add-row {
+      display: contents;
+    }
+
+    /* Its button's cell runs from the Name column to the row's end (dsgnrfhmn, 2026-10-25), so
+       a narrow Name column never wraps "Add Project"; the button keeps its own width, so
+       its hover brackets stay right after the label. */
+    .portfolio-table .portfolio-add-row > [data-type="checkbox-cell"] {
+      grid-column: 1 / 3;
+    }
+
+    .portfolio-table .portfolio-add-row > [data-type="text-active-cell"] {
+      grid-column: 3 / -1;
+    }
+
+    .portfolio-table .portfolio-add-row .ds-text-button {
+      white-space: nowrap;
+    }
+
+    .portfolio-table .ds-empty-state {
+      grid-column: 1 / -1;
+    }
+
+    .portfolio-table {
+      display: grid;
+      grid-template-columns:
+        var(--portfolio-row-h)
+        var(--portfolio-row-h)
+        minmax(0, 1fr)
+        minmax(0, 1fr)
+        calc(var(--ds-spacing-9) * 3 + var(--ds-spacing-6) - var(--ds-spacing-1));
+      align-content: start;
+    }
+    /* Column labels ("data" role, uppercase, base/600), light theme only:
+       dark keeps dis-system's own until the dark export lands. */
+    /* Drag handle and Edit / Delete only show while the row is hovered or
+       focused (Figma screen 12, row 4); the header row is not a __row. */
+
+    /* ---- Preview pane (Figma 150:16230) ---- */
+    .portfolio-preview {
+      flex: 1 1 0;
+      min-height: 0;
+      position: relative;
+      box-sizing: border-box;
+      padding: 0;
+      border-left: var(--portfolio-hairline);
+      overflow: hidden;
+    }
+    /* Edit with AI bar: the same left rule as the preview pane under it. */
+    .portfolio-pane--preview .ds-ai-edit-bar {
+      border-left: var(--portfolio-hairline);
+    }
+    /* Nothing to show yet: the preview draws two blank sheets as dis-system's skeleton
+       (page variant, data-static: no pulse, nothing is loading). The pages wrapper is
+       hidden meanwhile. */
+    .portfolio-preview .preview-skeleton[hidden] {
+      display: none;
+    }
+    .preview-skeleton {
+      height: 100%;
+      overflow: hidden;
+    }
+    .preview-skeleton .ds-skeleton {
+      padding: 0 0 var(--ds-spacing-6);
+    }
+    .portfolio-preview .ds-paper-preview-wrapper[hidden] {
+      display: none;
+    }
+    /* Pages: paper-preview's own component, restyled to Figma's spacing
+       (pages touch, a hairline between them, no backdrop of its own, fills the pane and scrolls
+       inside it). Landscape A4, as Figma's populated screens draw them. */
+    .portfolio-preview .ds-paper-preview-wrapper {
+      height: 100%;
+    }
+    .portfolio-preview .ds-paper-preview[data-mode="paged-preview"] {
+      max-height: 100%;
+      height: 100%;
+      row-gap: 0;
+      background-color: transparent;
+    }
+    /* Fit (dsgnrfhmn, 2026-10-24): the sheets edge to edge of the pane, touching, a hairline
+       between them the only separator. Zoomed out: --portfolio-zoom times the sheet's own
+       842 px, centred, lying on the page colour like paper, spacing-6 around and between
+       them. The pane scrolls when they are taller than it. */
+    .portfolio-preview .ds-paper-preview[data-mode="paged-preview"] {
+      box-sizing: border-box;
+      overflow: auto;
+    }
+    .portfolio-preview:not([data-zoom]) .ds-portfolio-sheet + .ds-portfolio-sheet {
+      border-top: var(--portfolio-hairline);
+    }
+    .portfolio-preview[data-zoom] .ds-paper-preview[data-mode="paged-preview"] {
+      padding: var(--ds-spacing-6);
+      row-gap: var(--ds-spacing-6);
+    }
+    .portfolio-preview[data-zoom] .ds-portfolio-sheet {
+      flex: none;
+      width: calc(842px * var(--portfolio-zoom));
+      margin-inline: auto;
+    }
+
+    /* Image rows: 160px squares, 10px apart. Figma clips the row; here it
+       scrolls sideways when a project has more images than fit. */
+    /* The picture. Mock tiles, drawn from four neutral tokens until Drive
+       thumbnails exist -- the real ones come from drive_projects.py's cache. */
+    /* Picked: 2px accent frame, the picture inset by a 4px white ring
+       (Figma 39:10477), and a numbered badge -- a 16px white square with the
+       pick order in accent, bottom-right. */
+    /* Nothing to pick from yet: an inset box with the italic line
+       (Figma 93:13904, base/50, 40px above and below). */
+
+    /* Description amount: three radios stacked, 10px apart (Figma 39:10300).
+       Drawn in CSS so the ring and dot follow the accent color in both
+       themes: 16px ring, 10px dot, centred in the 24px icon box. */
+    /* No hover brackets on a radio, and none of text-button's reserved
+       bracket space either (which would push the ring ~9px right of Figma's
+       11px inset). Specificity matches text-button's own [data-status] rules. */
+  </style>
+</head>
+<body>
+  <nav class="ds-nav-bar" data-fade-skip aria-label="Primary" data-title="shown">
+    <div class="ds-nav-bar__left"><span class="ds-nav-bar__title" data-nav-title aria-hidden="true">arta dashboard</span></div>
+
+    <div class="ds-nav-bar__center">
+      <a href="for-you.html" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="solid">For you<span class="ds-nav-bar__dot" data-nav-dot role="img" aria-label="Unread updates" hidden></span></a>
+      <a href="portfolio.html" class="ds-text-button" data-priority="primary" data-status="active" data-underline="solid" aria-current="page">Portfolio</a>
+      <a href="cv.html" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="solid">CV</a>
+    </div>
+
+    <div class="ds-nav-bar__right">
+      <button type="button" class="ds-text-button ds-nav-bar__theme-toggle" data-priority="secondary" data-status="active" data-underline="dotted">
+        <span class="ds-text-button__icon ds-nav-bar__theme-icon" data-icon="theme-light" aria-hidden="true"></span>
+        <span class="ds-text-button__label ds-nav-bar__theme-label">Dark</span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="portfolio-shell" id="portfolio-shell" data-fade-hold data-fade-region data-resizable data-resize-target="start" data-resize-key="portfolio-sidebar" data-min-size="240" data-min-rest="640">
+    <!-- Sidebar: the sets, rendered from the model in the script below. -->
+    <aside class="ds-sidebar-list" id="portfolio-sidebar" aria-label="Portfolio sets" data-collapsed="false">
+      <div class="ds-sidebar-list__head">
+        <span class="ds-sidebar-list__title">Your Portfolio sets</span>
+        <button type="button" class="ds-sidebar-list__toggle" id="portfolio-sidebar-toggle" aria-expanded="true" aria-controls="portfolio-sidebar-list" aria-label="Collapse sidebar">
+          <span class="ds-sidebar-list__toggle-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="ds-sidebar-list__items" id="portfolio-sidebar-list" data-skeleton="item:5"></div>
+    </aside>
+
+    <div class="ds-split__handle" role="separator" aria-orientation="vertical" tabindex="0" aria-label="Resize sidebar"></div>
+
+    <main class="portfolio-main">
+      <div class="ds-page-head">
+        <div class="ds-page-head__left">
+          <h1 class="ds-page-head__title" id="portfolio-set-title"></h1>
+        </div>
+        <div class="ds-page-head__right">
+          <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" id="portfolio-undo">Undo</button>
+          <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" id="portfolio-redo">Redo</button>
+          <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" id="portfolio-save-set" data-popup-open="portfolio-save-set-popup">Save Portfolio Set</button>
+          <button type="button" class="ds-text-button ds-ai-edit-bar__toggle" data-priority="secondary" data-status="active" data-underline="dotted" id="portfolio-edit-ai" aria-expanded="false" aria-controls="portfolio-ai-bar">Edit with AI</button>
+          <button type="button" class="ds-text-button" data-priority="primary" data-status="active" data-underline="dotted" id="portfolio-download-pdf">Download PDF</button>
+        </div>
+      </div>
+
+
+      <div class="ds-split" data-resizable data-resize-key="portfolio-preview">
+        <section class="ds-pane portfolio-pane--table" aria-labelledby="portfolio-table-title">
+          <div class="ds-pane__head">
+            <div class="ds-pane__heading">
+              <span class="ds-pane__title" id="portfolio-table-title">Included projects</span>
+              <span class="ds-pane__caption" id="portfolio-table-count">0 total</span>
+            </div>
+            <!-- Bulk actions on the ticked projects (dsgnrfhmn, 2026-10-25), off until one is ticked
+                 (arta.js gates data-gated buttons by the rows' data-selected). -->
+            <div class="ds-table-header-actions" data-actions-for="portfolio-table">
+              <button type="button" class="ds-text-button" data-priority="secondary" data-status="disabled" data-underline="dotted" data-gated data-action="bulk-delete" disabled data-tooltip="Remove the selected projects from this set">Delete</button>
+            </div>
+          </div>
+          <div class="ds-pane__scroll">
+            <div class="portfolio-table" id="portfolio-table" data-skeleton="row:4" role="table" aria-label="Included projects" data-reveal-actions>
+              <div class="ds-table-cell" data-type="checkbox-cell" data-checkbox-role="select-all" data-state="unchecked" data-select-all role="checkbox" tabindex="0" aria-checked="false" aria-label="Select all projects">
+                <span class="ds-table-cell__icon" data-icon="checkbox" data-checkbox-state="unchecked" aria-hidden="true"></span>
+                <span class="ds-table-cell__icon" data-icon="checkbox-selected" data-checkbox-state="checked" aria-hidden="true"></span>
+                <span class="ds-table-cell__icon" data-icon="checkbox-semi-select" data-checkbox-state="indeterminate" aria-hidden="true"></span>
+              </div>
+              <div class="ds-table-header-cell" aria-hidden="true"></div>
+              <div class="ds-table-header-cell" role="columnheader"><span class="ds-table-cell__text">Name</span></div>
+              <div class="ds-table-header-cell" role="columnheader"><span class="ds-table-cell__text">Details</span></div>
+              <div class="ds-table-header-cell" aria-hidden="true"></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="ds-split__handle" role="separator" aria-orientation="vertical" tabindex="0" aria-label="Resize preview"></div>
+
+        <section class="ds-pane portfolio-pane--preview" aria-labelledby="portfolio-preview-title">
+          <div class="ds-pane__head" data-divider="start">
+            <div class="ds-pane__heading">
+              <span class="ds-pane__title" id="portfolio-preview-title">Preview</span>
+              <!-- Page count is a mock until the pagination engine exists (CLAUDE.md, phase boundary). -->
+              <span class="ds-pane__caption" id="portfolio-preview-count">0 Pages</span>
+            </div>
+            <!-- How the sheets are shown (dsgnrfhmn, 2026-10-24): fit to the pane's width, or a smaller
+                 zoom of the sheet's own 842 px; drawn by DsZoomButtons.bar, the same bar as on CV,
+                 at the right of the head. -->
+            <div id="portfolio-zoom-bar"></div>
+          </div>
+          <!-- Edit with AI: opened by the header button; right under the pane head, as tall as it. -->
+          <div class="ds-ai-edit-bar" id="portfolio-ai-bar" hidden>
+            <input class="ds-input ds-ai-edit-bar__input" id="portfolio-ai-input" type="text" data-fill="filled" maxlength="2000" placeholder="Describe the change, e.g. put the newest project first" aria-label="Describe the change to the portfolio set" autocomplete="off">
+            <button type="button" class="ds-text-button ds-ai-edit-bar__button" id="portfolio-ai-run" data-priority="secondary" data-status="active" data-underline="dotted">Edit</button>
+          </div>
+          <div class="portfolio-preview" data-skeleton="page:1">
+            <div class="preview-skeleton" id="portfolio-preview-empty" aria-hidden="true" data-skeleton-hide><div class="ds-skeleton" data-variant="page" data-static><span class="ds-skeleton__bar"></span></div><div class="ds-skeleton" data-variant="page" data-static><span class="ds-skeleton__bar"></span></div></div>
+            <div class="ds-paper-preview-wrapper" id="portfolio-preview-wrapper" hidden>
+              <div class="ds-paper-preview" id="portfolio-preview-pages" data-mode="paged-preview" data-orientation="landscape"></div>
+              <div class="ds-paper-preview__scrollbar" aria-hidden="true">
+                <div class="ds-paper-preview__scrollbar-thumb"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!--
+    Add / edit project popup (Figma 150:16503 empty, 150:16475 with a project
+    chosen): four numbered steps stacked in one panel. The dropdown items are
+    the mock catalog the script reads; Drive is the real source later.
+  -->
+  <div class="ds-popup-overlay" id="portfolio-add-project-popup" data-placement="center" data-backdrop="static" hidden>
+    <div class="ds-popup" data-size="large" data-closable role="dialog" aria-labelledby="portfolio-add-project-title" tabindex="-1">
+      <div class="ds-popup__title" id="portfolio-add-project-title">Add a project</div>
+      <button type="button" class="ds-popup__close" aria-label="Close" data-popup-dismiss></button>
+      <div class="ds-popup__body" data-type="steps">
+        <div class="ds-popup-step__head" data-collapsible data-ap-step="project">
+          <ol class="ds-popup-step__title" start="1"><li>Choose your project</li></ol>
+        </div>
+        <div class="ds-popup-step__body">
+          <div class="ds-dropdown" id="ap-dropdown">
+            <button type="button" class="ds-input-dropdown" data-size="large" data-fill="filled" data-placeholder aria-haspopup="listbox" data-dropdown-trigger aria-label="Project">
+              <span data-dropdown-value>Choose the project from the list</span>
+              <span class="ds-input-dropdown__icon" data-icon="arrow-down" aria-hidden="true"></span>
+            </button>
+            <div class="ds-dropdown-menu" role="listbox" data-scroll hidden>
+              <!-- Items: the projects from /api/projects, rendered by the boot script below. -->
+            </div>
+          </div>
+        </div>
+
+        <div class="ds-popup-step__head" data-collapsible>
+          <ol class="ds-popup-step__title" start="2"><li>Choose work images</li></ol>
+          <span class="ds-popup-step__note" data-ap-empty="works" hidden>No images in this section</span>
+          <button type="button" class="ds-text-button" data-priority="secondary" data-status="disabled" data-underline="dotted" data-ap-reset="works" disabled>Reset the selection</button>
+        </div>
+        <div class="ds-popup-step__body ds-gallery-picker" id="ap-works" role="group" aria-label="Work images"></div>
+
+        <div class="ds-popup-step__head" data-collapsible>
+          <ol class="ds-popup-step__title" start="3"><li>Choose exhibition images</li></ol>
+          <span class="ds-popup-step__note" data-ap-empty="exhibitions" hidden>No images in this section</span>
+          <button type="button" class="ds-text-button" data-priority="secondary" data-status="disabled" data-underline="dotted" data-ap-reset="exhibitions" disabled>Reset the selection</button>
+        </div>
+        <div class="ds-popup-step__body ds-gallery-picker" id="ap-exhibitions" role="group" aria-label="Exhibition images"></div>
+
+        <div class="ds-popup-step__head" data-collapsible data-ap-step="text">
+          <ol class="ds-popup-step__title" start="4"><li>Choose description amount</li></ol>
+          <span class="ds-popup-step__note" data-ap-text-note>(Default is short description)</span>
+        </div>
+        <div class="ds-popup-step__body ds-radio-group" id="ap-text" role="radiogroup" aria-label="Description amount">
+          <button type="button" class="ds-text-button ds-radio" role="radio" aria-checked="true" tabindex="0" data-value="short" data-priority="secondary" data-status="active" data-underline="dotted"><span class="ds-radio__icon" aria-hidden="true"></span><span class="ds-text-button__text">Short description</span></button>
+          <button type="button" class="ds-text-button ds-radio" role="radio" aria-checked="false" tabindex="-1" data-value="middle" data-priority="secondary" data-status="active" data-underline="dotted"><span class="ds-radio__icon" aria-hidden="true"></span><span class="ds-text-button__text">Middle description</span></button>
+          <button type="button" class="ds-text-button ds-radio" role="radio" aria-checked="false" tabindex="-1" data-value="full" data-priority="secondary" data-status="active" data-underline="dotted"><span class="ds-radio__icon" aria-hidden="true"></span><span class="ds-text-button__text">Full description</span></button>
+        </div>
+      </div>
+      <div class="ds-popup__bottom">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" id="portfolio-add-project-cancel" data-popup-dismiss>Cancel and close</button>
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="disabled" data-underline="dotted" id="portfolio-add-project-save" data-popup-dismiss data-popup-confirm disabled><span class="ds-text-button__text">Add Project</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save as New Set popup (SS5.5.5 / SS5.6.2): a name, then a duplicate of the open set. -->
+  <div class="ds-popup-overlay" id="portfolio-save-set-popup" data-placement="center" hidden>
+    <div class="ds-popup" data-size="small" role="dialog" aria-labelledby="portfolio-save-set-title" tabindex="-1">
+      <div class="ds-popup__title" id="portfolio-save-set-title">Save Portfolio Set</div>
+      <div class="ds-popup__body" data-type="input">
+        <input class="ds-input" data-fill="filled" type="text" id="portfolio-save-set-name" placeholder="Name the new set" aria-label="Name of the new set" maxlength="120" autocomplete="off">
+      </div>
+      <div class="ds-popup__bottom">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-popup-dismiss>Cancel</button>
+        <button type="button" class="ds-text-button" data-priority="primary" data-status="active" data-underline="dotted" id="portfolio-save-set-confirm" data-popup-dismiss>Save Portfolio Set</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Anchored confirmation popup (SS5.6.3), content set per action by askConfirm() below. -->
+  <div class="ds-popup-overlay" id="portfolio-confirm-popup" data-placement="anchored" hidden>
+    <div class="ds-popup" data-size="small" role="dialog" aria-labelledby="portfolio-confirm-title" tabindex="-1">
+      <div class="ds-popup__title" id="portfolio-confirm-title">Confirm</div>
+      <div class="ds-popup__body" data-type="text">
+        <p id="portfolio-confirm-body"></p>
+      </div>
+      <div class="ds-popup__bottom">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" id="portfolio-confirm-cancel" data-popup-dismiss>Cancel, keep the changes</button>
+        <button type="button" class="ds-text-button" data-priority="primary" data-status="active" data-underline="dotted" id="portfolio-confirm-ok" data-popup-dismiss>Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right click on a portfolio set in the sidebar (context-menu), the same menu as the CV
+       sets'. One menu for every set: the row it opened on comes with the
+       ds-context-menu-select event. Delete sits apart, and asks first. -->
+  <div class="ds-dropdown-menu ds-context-menu" id="portfolio-set-menu" role="menu" aria-label="Portfolio set actions" hidden>
+    <button type="button" class="ds-dropdown-menu__item" role="menuitem" data-value="rename">Rename</button>
+    <button type="button" class="ds-dropdown-menu__item" role="menuitem" data-value="duplicate">Duplicate</button>
+    <button type="button" class="ds-dropdown-menu__item" role="menuitem" data-value="download-pdf">Download PDF</button>
+    <hr class="ds-divider" data-orientation="horizontal" role="separator">
+    <button type="button" class="ds-dropdown-menu__item" role="menuitem" data-value="delete">Delete</button>
+  </div>
+
+  <!-- Opened from the menu: the popup component opens an overlay on a click on its
+       [data-popup-open] element, so the menu's choices click these. -->
+  <button type="button" hidden id="portfolio-rename-trigger" data-popup-open="portfolio-rename-set-popup" tabindex="-1" aria-hidden="true"></button>
+  <button type="button" hidden id="portfolio-confirm-trigger" data-popup-open="portfolio-confirm-popup" tabindex="-1" aria-hidden="true"></button>
+
+  <!-- Rename portfolio set: same pattern as Save as New Set. -->
+  <div class="ds-popup-overlay" id="portfolio-rename-set-popup" data-placement="center" hidden>
+    <div class="ds-popup" data-size="small" role="dialog" aria-labelledby="portfolio-rename-set-title" tabindex="-1">
+      <div class="ds-popup__title" id="portfolio-rename-set-title">Rename portfolio set</div>
+      <div class="ds-popup__body" data-type="input">
+        <input class="ds-input" data-fill="filled" type="text" id="portfolio-rename-set-name" placeholder="Name the set" aria-label="Name of the set" maxlength="120" autocomplete="off">
+      </div>
+      <div class="ds-popup__bottom">
+        <button type="button" class="ds-text-button" data-priority="secondary" data-status="active" data-underline="dotted" data-popup-dismiss>Cancel</button>
+        <button type="button" class="ds-text-button" data-priority="primary" data-status="active" data-underline="dotted" id="portfolio-rename-set-confirm" data-popup-dismiss data-popup-confirm>Rename</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- The project dropdown's items come from the API, so the scripts below are deferred:
+       this boot script renders them, then runs the text/boot scripts in this order (the
+       components and arta.js wire the elements that exist when they run). -->
+  <script src="arta-api.js"></script>
+  <script src="arta-pdf.js"></script>
+  <script src="arta-recent.js"></script>
+  <script src="arta-ai-edit.js"></script>
+  <script src="arta-boot.js"></script>
+  <script src="portfolio-ready.js"></script>
+  <script type="text/boot" src="dis-system/components/text-button/component.js"></script>
+  <script type="text/boot" src="dis-system/components/sidebar-list/component.js"></script>
+  <script type="text/boot" src="dis-system/components/input-dropdown/component.js"></script>
+  <script type="text/boot" src="dis-system/components/dropdown-menu/component.js"></script>
+  <script type="text/boot" src="dis-system/components/context-menu/component.js"></script>
+  <!-- Not text/boot: the split only needs the static shell, and a remembered width must be
+       applied before the data arrives, or the panes jump when it does. -->
+  <script src="dis-system/components/pane/component.js"></script>
+  <!-- Not text/boot either: its load listener must be in place before the sheets render. -->
+  <script src="dis-system/local-components/portfolio-sheet/component.js"></script>
+  <script src="dis-system/local-components/layout-picker/component.js"></script>
+  <script src="dis-system/local-components/zoom-buttons/component.js"></script>
+  <script type="text/boot" src="dis-system/components/paper-preview/component.js"></script>
+  <script type="text/boot" src="dis-system/local-components/ai-edit-bar/component.js"></script>
+  <script type="text/boot" src="dis-system/components/input/component.js"></script>
+  <script type="text/boot" src="dis-system/components/popup/component.js"></script>
+  <script type="text/boot" src="dis-system/components/popup-step/component.js"></script>
+  <script type="text/boot" src="dis-system/components/toast/component.js"></script>
+  <script type="text/boot" src="dis-system/components/tooltip/component.js"></script>
+  <script type="text/boot" src="dis-system/components/table-header-actions/component.js"></script>
+  <script type="text/boot" src="portfolio-page.js"></script>
+  <script type="text/boot" src="arta.js"></script>
+</body>
+</html>

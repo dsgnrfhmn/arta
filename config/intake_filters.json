@@ -1,0 +1,32 @@
+{
+  "notes": "Intake pre-filter, see pipeline/intake_filter.py. 'filter' (default): the item lands in Filtered with the rule's reason and can be promoted. 'drop': never stored, never on the dashboard. Sender and subject only, never the body (a digest holds many calls). force_accept_substrings lets a subject through every 'filter' rule, not 'drop'. Add a rule per art field to filter out.",
+  "force_accept_substrings": [
+    "fine art"
+  ],
+  "rules": [
+    {
+      "reason": "Google account notice",
+      "action": "drop",
+      "sender_domains": [
+        "google.com",
+        "googlemail.com"
+      ]
+    },
+    {
+      "reason": "Field: music",
+      "subject_words": [
+        "music",
+        "musical",
+        "musician",
+        "musicians",
+        "composer",
+        "composers",
+        "orchestra",
+        "choir",
+        "opera",
+        "jazz",
+        "symphony"
+      ]
+    }
+  ]
+}

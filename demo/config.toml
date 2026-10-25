@@ -1,0 +1,46 @@
+# The demo's configuration, read by `python -m demo` only. Every source is "demo"
+# (the made-up data in demo/), the Claude client is the mock, no Google account and
+# no key are used, so the demo runs offline and costs nothing. `python -m demo` checks
+# that before it starts and refuses anything else.
+
+[server]
+port = 8455
+# Set by `python -m demo`: a folder outside the repository, marked as the demo's
+# (see demo/__main__.py). Left empty here on purpose.
+data_dir = ""
+
+[intake]
+sources = ["demo"]
+
+[updates]
+source = "demo"
+
+[projects]
+source = "demo"
+local_dir = ""
+drive_folder = ""
+drive_categories = []
+registry_file = ""
+
+[cv]
+source = "demo"
+local_file = ""
+drive_file = ""
+
+[portfolio_cover]
+drive_file = ""
+file = ""
+text_file = ""
+
+[llm]
+mode = "mock"
+model = ""
+api_key_file = ""
+artist_profile_file = ""
+max_usd = 1.0
+max_calls = 20
+cache = true
+
+[google]
+token_file = ""
+client_secret_file = ""

@@ -1,0 +1,47 @@
+[
+  {
+    "message_id": "demo-msg-001",
+    "opportunity_id": "demo-0106",
+    "sender": "Culture Office, City of Eastmoor <culture@eastmoor.example.org>",
+    "received_at": "2026-10-01T09:12:00Z",
+    "subject": "Working grant: application received",
+    "body": "Dear Jane Roe,\n\nWe have received your application for the City of Eastmoor working grant. Decisions are announced in mid-December.\n\nCulture Office",
+    "seed": true
+  },
+  {
+    "message_id": "demo-msg-002",
+    "opportunity_id": "demo-0107",
+    "sender": "Paper Mill Residency <residency@papermill.example.org>",
+    "received_at": "2026-10-10T15:40:00Z",
+    "subject": "Paper Mill Residency 2027: you have been selected",
+    "body": "Dear Jane,\n\nWe are happy to offer you the residency from 1 to 28 February 2027. Please confirm by 1 November.\n\nThe Paper Mill team",
+    "seed": true
+  },
+  {
+    "message_id": "demo-msg-003",
+    "opportunity_id": "demo-0109",
+    "sender": "Glasshouse Gallery <prize@glasshouse.example.org>",
+    "received_at": "2026-09-30T11:00:00Z",
+    "subject": "Glasshouse Painting Prize: results",
+    "body": "Dear applicant,\n\nThank you for entering. This year's shortlist has been chosen, and your work was not selected.\n\nGlasshouse Gallery",
+    "seed": true
+  },
+  {
+    "message_id": "demo-msg-004",
+    "opportunity_id": "demo-0108",
+    "sender": "Weavers' Guild <grants@weaversguild.example.org>",
+    "received_at": "2026-10-22T10:05:00Z",
+    "subject": "Materials grant: short conversation?",
+    "body": "Dear Jane,\n\nYou are on our shortlist. Could you join a 20-minute call next week to talk about your materials budget?\n\nWeavers' Guild",
+    "seed": false
+  },
+  {
+    "message_id": "demo-msg-005",
+    "opportunity_id": "demo-0106",
+    "sender": "Culture Office, City of Eastmoor <culture@eastmoor.example.org>",
+    "received_at": "2026-10-23T08:30:00Z",
+    "subject": "Working grant: a question about your budget",
+    "body": "Dear Jane Roe,\n\nThe panel asks whether the studio rent in your budget is per month or per year. A one-line answer is enough.\n\nCulture Office",
+    "seed": false
+  }
+]

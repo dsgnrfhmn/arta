@@ -1,0 +1,81 @@
+# arta configuration: every setting the code reads, with example values.
+#
+# Copy to ~/.config/arta/config.toml (or set ARTA_CONFIG to another absolute path),
+# then: chmod 700 ~/.config/arta && chmod 600 ~/.config/arta/config.toml
+#
+# Every key must be present. A missing or unknown key stops arta at start, so a typo
+# never turns into a silent default. "" and [] mean "not set" where a key is optional.
+# Secrets are never written here: the file names the paths of separate secret files,
+# each mode 600 and outside the repository.
+
+[server]
+# The dashboard listens on 127.0.0.1 only; open http://127.0.0.1:<port>/ in a browser.
+port = 8454
+# Database, caches and PDF exports. Absolute, outside the repository.
+data_dir = "/Users/you/Library/Application Support/arta"
+
+# Each kind of content below names its own source. Nothing falls back to anything
+# else: "none" means not configured (the page says so), and "fixtures" is the
+# synthetic test data in tests/fixtures/, never real content. This example runs
+# fully offline on the fixtures.
+
+[intake]
+# For You, "Load opportunities": read in this order. Any of "gmail" (the dedicated
+# account's inbox), "artconnect" (the public listing), "fixtures". [] for none.
+sources = ["fixtures"]
+
+[updates]
+# Replies to applications, "Updates (N new)": "gmail", "fixtures" or "none".
+source = "fixtures"
+
+[projects]
+# Portfolio projects: "drive", "local", "fixtures" or "none".
+source = "fixtures"
+# With "local": a folder on this machine with one folder per project inside (images,
+# exhibition subfolders, a .docx description). Absolute, outside the repository.
+local_dir = ""
+# With "drive": the name of the folder shared to the arta account, and the subfolders
+# of it that hold project folders. [] when the project folders sit directly inside.
+drive_folder = ""
+drive_categories = []
+# Authors and places with their spellings, for image captions (JSON). It names real
+# people: absolute path outside the repository. "": captions are read by position.
+registry_file = ""
+
+[cv]
+# The master CV: "drive", "local", "fixtures" or "none".
+source = "fixtures"
+# With "local": a master CV file written by scripts/build_cv_master.py from a text file.
+local_file = ""
+# With "drive": the file id of a Google Doc shared to the arta account.
+drive_file = ""
+
+[portfolio_cover]
+# The portfolio PDF whose page 1 opens every portfolio set: a Drive file id, or a local
+# PDF (absolute path). At most one; both "" means no cover.
+drive_file = ""
+file = ""
+# The cover's words as JSON (absolute path); "" keeps the cover as the page image.
+text_file = ""
+
+[llm]
+# "mock" costs nothing and labels its output mock. "live" calls the paid Claude API.
+mode = "mock"
+# Required with "live": the model name.
+model = ""
+# Required with "live": a file holding only the Anthropic API key, mode 600.
+api_key_file = ""
+# Required with "live": the artist profile analysis judges against, mode 600.
+artist_profile_file = ""
+# Spend guards per server process: the call that would pass either is refused.
+max_usd = 1.0
+max_calls = 20
+# false forces fresh calls instead of reusing answers for the same text.
+cache = true
+
+[google]
+# The dedicated account's token.json (mode 600), written by scripts/google_auth_setup.py.
+# Required as soon as any source above is "gmail" or "drive".
+token_file = ""
+# The OAuth client secret JSON from Google Cloud Console; only the setup script reads it.
+client_secret_file = ""

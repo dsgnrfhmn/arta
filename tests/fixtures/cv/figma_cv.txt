@@ -1,0 +1,92 @@
+// Master CV of a fictional artist, test data only: every name, place and title is made up.
+// The text format scripts/build_cv_master.py reads; figma_master.json is built from it.
+// Format: "# Title" starts a block of kind heading. "YEAR<TAB>text" is one text block;
+// a following "+<TAB>text" line is another line of the same block. Lines without a
+// year are text blocks of their own ("~ text").
+@short: JANE ROE; ABOUT; EDUCATION; SOLO PROJECTS; CONTACT
+@middle: JANE ROE; ABOUT; EDUCATION; PROFESSIONAL EXPERIENCE; SOLO PROJECTS; GROUP PROJECTS (SELECTION); RESIDENCIES; GRANTS, AWARDS AND SCHOLARSHIPS; CONTACT
+# JANE ROE
+~	1986 born in Westfield | ZZ
++	Lives and works in Eastmoor | YY
+# ABOUT
+~	Jane Roe is a painter and textile artist. She works with tides, weather and woven structures, and with the slow, repeated gestures that both painting and weaving ask for.
+# EDUCATION
+2023	Summer workshop "Natural Dyes", Weavers' Guild, Westfield | ZZ
+2021	Studio Fellowship, Riverside Art Institute, Eastmoor | YY
+2019	Online course "Writing about your own work", Open Studio Network
+2016	MFA in Painting, Eastmoor School of Art | YY
+2014	Exchange semester, Coastal Art Academy, Westfield | ZZ
+2011	BA in Textile Design, Westfield University | ZZ
+2008	Foundation year, City College of Art, Westfield | ZZ
+2007	Evening classes in life drawing, Harbour Hall, Westfield | ZZ
+# PROFESSIONAL EXPERIENCE
+2025	Visiting tutor, Textile Department, Eastmoor School of Art | YY
+2024	Workshop, "Weaving a weather diary", Library of Eastmoor | YY
+2024	Talk, "Painting the same view for a year", Gallery One, Eastmoor | YY
+2023	Panel, "Studios for artists with children", Riverside Art Institute, Eastmoor | YY
+2022	Workshop, "Colour from plants", Community Garden, Northbay | XX
+2020	Studio assistant to a sculptor, Eastmoor | YY
+2018	Gallery educator, Museum Four, Northbay | XX
+2015	Teaching assistant, Painting Department, Eastmoor School of Art | YY
+# SOLO PROJECTS
+2025	exhibition "Woven Weather", Art Hall Two, Westfield | ZZ
+2024	exhibition "Low Tide", Gallery One, Eastmoor | YY
++	exhibition "Low Tide" (second chapter), Harbour Centre, Northbay | XX
+2023	exhibition "Paper Maps", Museum Four, Northbay | XX
+2022	exhibition "Rooms", Club Three, Eastmoor | YY
++	studio exhibition "Rooms (sketches)", Elm Street 12, Eastmoor | YY
+2020	exhibition "Salt Marsh", Small Gallery, Westfield | ZZ
+2018	exhibition "Night Kitchen", Harbour Centre, Northbay | XX
+2016	MFA degree show "Lamp Black", Eastmoor School of Art | YY
+# GROUP PROJECTS (SELECTION)
+2025	exhibition "The Long Table", Gallery One, Eastmoor | YY
++	exhibition "Soft Machines", Art Hall Two, Westfield | ZZ
+2024	exhibition "Weather Reports", Museum Four, Northbay | XX
++	exhibition "Fellows' Choice", Riverside Art Institute, Eastmoor | YY
++	exhibition "Warp and Weft", Textile Museum, Westfield | ZZ
++	open studios, Elm Street Studios, Eastmoor | YY
++	auction "Studio Fund", in support of a local studio building, Auction House Five, Eastmoor | YY
+2023	exhibition "Small Hours", Club Three, Eastmoor | YY
++	exhibition "Drawn Lines", Centre for Contemporary Art, Northbay | XX
++	art fair "Paper & Thread", Hotel Nine, Westfield | ZZ
++	exhibition "Shore", Corridor Gallery, Northbay | XX
+2022	exhibition "Close to Home", Church Hall, Eastmoor | YY
++	exhibition "Signal", with a sound artist, Gallery Zero, Westfield | ZZ
++	exhibition "Second Look", Art Space 31, Northbay | XX
+2021	exhibition "Cloth", Textile Museum, Westfield | ZZ
++	exhibition "Hall 14 Open", Hall 14, Westfield | ZZ
+2019	exhibition "Young Painters", Museum Four, Northbay | XX
+2017	exhibition "New Graduates", Gallery Zero, Westfield | ZZ
+# GRANTS, AWARDS AND SCHOLARSHIPS
+2025	Mobility grant, Example Culture Fund
+2024	Working grant, City of Eastmoor
+2024	Shortlist, Textile Art Prize
+2023	Project grant, Riverside Foundation
+2022	Materials grant, Weavers' Guild
+2021	Studio Fellowship, Riverside Art Institute
+2016	Graduate Prize, Eastmoor School of Art
+2014	Exchange scholarship, Coastal Art Academy
+# WORKS IN PUBLIC COLLECTIONS
+~	Museum Four, Northbay | XX
++	Textile Museum, Westfield | ZZ
++	Collection of the City of Eastmoor | YY
+# RESIDENCIES
+2025	residency "Coastal Residency", Westfield | ZZ
+2024	residency "Paper Mill", Westfield | ZZ
+2023	residency "Island Studio", Northbay | XX
++	residency "Mill Pond", Westfield | ZZ
+2021	residency "Riverside Studios", Eastmoor | YY
+2019	residency "Saltworks", Westfield | ZZ
+# PUBLICATIONS
+2024	Low Tide, exh. cat., Gallery One, Eastmoor
+2023	Paper Maps, artist's book, Small Press Eastmoor
+2022	Rooms, exh. leaflet, Club Three, Eastmoor
+2021	Example Quarterly # 12, Northbay
+# PRESS (SELECTION)
+2024	"A painter of slow things", by A. Writer, Example Daily
+2023	"Weaving the weather", by B. Critic, Art Weekly
+2022	"Rooms with no doors", by C. Reporter, City Paper
+# CONTACT
+~	+00 000 0000000
++	jane.roe@example.org
++	Website: example.org/jane-roe

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Per-user LaunchAgent: arta starts at login and serves the dashboard on
+     127.0.0.1. Rendered by scripts/install_macos.sh into ~/Library/LaunchAgents/;
+     launchd does not expand ~, so the @...@ placeholders become absolute paths.
+     No KeepAlive on purpose: a configuration error exits non-zero, and a restart
+     loop would only fill the log with the same message. -->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>@LABEL@</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>@REPO@/venv/bin/python</string>
+    <string>-m</string>
+    <string>web.server</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>@REPO@</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <!-- launchd's default PATH has no Homebrew: pdftoppm (poppler) lives there. -->
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>PYTHONDONTWRITEBYTECODE</key>
+    <string>1</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>@HOME@/Library/Logs/arta/arta.log</string>
+  <key>StandardErrorPath</key>
+  <string>@HOME@/Library/Logs/arta/arta.log</string>
+</dict>
+</plist>

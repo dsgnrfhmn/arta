@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# Pre-commit guard: gitleaks plus a private denylist of strings that must never
+# enter this public repository (real names, ids, addresses).
+#
+# Fail closed: a missing gitleaks, a missing or empty denylist, or any match
+# stops the commit. The denylist lives outside the repository and is never
+# printed; a match is reported by file and line number only.
+#
+# Enable once per clone:  git config core.hooksPath .githooks
+# Denylist: $ARTA_DENYLIST, else ~/.config/arta/denylist.txt
+#   one literal string per line, matched case-insensitively; # starts a comment.
+
+set -euo pipefail
+
+fail() { printf 'pre-commit: %s\n' "$*" >&2; exit 1; }
+
+denylist="${ARTA_DENYLIST:-$HOME/.config/arta/denylist.txt}"
+
+command -v gitleaks >/dev/null 2>&1 \
+  || fail "gitleaks is not installed. Install it (brew install gitleaks); the commit is refused without it."
+
+[ -f "$denylist" ] || fail "no denylist at $denylist. Create it (mode 600), one string per line."
+
+patterns="$(mktemp)"
+trap 'rm -f "$patterns"' EXIT
+grep -v -e '^[[:space:]]*#' -e '^[[:space:]]*$' "$denylist" > "$patterns" || true
+[ -s "$patterns" ] || fail "denylist $denylist has no entries. An empty denylist checks nothing."
+
+# 1. gitleaks on what is staged. 8.19 and later scan with `gitleaks git`; older releases
+# (Debian ships 8.16) only have `gitleaks protect`. A leak exits 3, so any other non-zero
+# exit is gitleaks failing to run, reported as that rather than as a found secret.
+if gitleaks git --help >/dev/null 2>&1; then
+  scan=(gitleaks git --pre-commit --staged)
+else
+  scan=(gitleaks protect --staged)
+fi
+status=0
+"${scan[@]}" --redact --no-banner --exit-code 3 || status=$?
+case "$status" in
+  0) ;;
+  3) fail "gitleaks found a possible secret in the staged changes (see above)." ;;
+  *) fail "gitleaks could not run (exit $status, command: ${scan[*]}). Check the installation: gitleaks --help" ;;
+esac
+
+# 2. Denylist on staged paths and staged content, binaries included (EXIF, PDF metadata).
+found=0
+while IFS= read -r -d '' path; do
+  if printf '%s\n' "$path" | grep -q -i -F -f "$patterns"; then
+    printf 'pre-commit: denylisted string in the path: %s\n' "$path" >&2
+    found=1
+  fi
+  # A submodule's files belong to its own repository and are checked there.
+  [ "$(git ls-files -s -- "$path" | cut -d' ' -f1)" = "160000" ] && continue
+  lines="$(git show ":$path" | grep -a -n -i -F -f "$patterns" | cut -d: -f1 | paste -sd, - || true)"
+  if [ -n "$lines" ]; then
+    printf 'pre-commit: denylisted string in %s, line(s) %s\n' "$path" "$lines" >&2
+    found=1
+  fi
+done < <(git diff --cached --name-only --diff-filter=ACMR -z)
+
+[ "$found" -eq 0 ] || fail "commit refused: remove the denylisted strings above."
+exit 0

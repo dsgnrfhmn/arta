@@ -1,0 +1,23 @@
+[
+  {
+    "id": "demo-email-001",
+    "from": "Lighthouse Studios <calls@lighthouse.example.org>",
+    "received_at": "2026-10-25T07:30:00Z",
+    "subject": "Open call: Lighthouse Studio Residency 2027",
+    "body": "We invite painters and textile artists to apply for a six-week residency in the old lighthouse keeper's house. Deadline 28 February 2027. The residency runs from 1 May to 15 June 2027. Studio, lodging and a stipend of 1,200 are provided."
+  },
+  {
+    "id": "demo-email-002",
+    "from": "Coastal Arts Newsletter <news@coastal-arts.example.org>",
+    "received_at": "2026-10-25T07:45:00Z",
+    "subject": "Call for chamber orchestra composers",
+    "body": "New works for chamber orchestra, premiered at the spring festival. Deadline 15 January 2027."
+  },
+  {
+    "id": "demo-email-003",
+    "from": "Riverside Foundation <grants@riverside.example.org>",
+    "received_at": "2026-10-25T08:00:00Z",
+    "subject": "Small Projects Fund: round three is open",
+    "body": "Grants of up to 3,000 for small projects by artists in the region: a publication, a workshop series or a first exhibition of new work. Deadline 31 January 2027, decisions in March."
+  }
+]

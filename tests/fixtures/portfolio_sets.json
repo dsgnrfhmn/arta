@@ -1,0 +1,40 @@
+[
+  {
+    "name": "New proposed set",
+    "created_at": "2026-09-19T12:00:00Z",
+    "entries": [{"project": "Field Notes", "works": [0, 1, 2], "exhibitions": [0, 1], "text_amount": "middle"}]
+  },
+  {
+    "name": "Portfolio Set 1",
+    "created_at": "2026-09-18T12:00:00Z",
+    "entries": []
+  },
+  {
+    "name": "Harbour overview",
+    "created_at": "2026-09-15T09:00:00Z",
+    "saved_at": "2026-09-19T09:00:00Z",
+    "entries": [
+      {"project": "Field Notes", "works": [0, 1, 2, 3], "exhibitions": [0, 1, 2], "text_amount": "full"},
+      {"project": "Field Notes", "works": [0], "exhibitions": [], "text_amount": "short"}
+    ]
+  },
+  {
+    "name": "Saved by Jane set",
+    "created_at": "2026-09-10T09:00:00Z",
+    "saved_at": "2026-09-17T10:00:00Z",
+    "entries": []
+  },
+  {
+    "name": "Wexford application",
+    "created_at": "2026-09-08T09:00:00Z",
+    "saved_at": "2026-09-10T09:00:00Z",
+    "opportunity": "Wexford Arts Bursary",
+    "entries": [{"project": "Field Notes", "works": [1, 2], "exhibitions": [3], "text_amount": "middle"}]
+  },
+  {
+    "name": "Old proposal",
+    "created_at": "2026-09-01T09:00:00Z",
+    "archived_at": "2026-09-05T09:00:00Z",
+    "entries": [{"project": "Field Notes", "works": [0], "exhibitions": [0], "text_amount": "short"}]
+  }
+]

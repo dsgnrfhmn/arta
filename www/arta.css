@@ -1,0 +1,247 @@
+/*
+  arta.css — shared, page-shell CSS across all four dashboard pages.
+  Local to arta (not dis-system): this is a project-specific spacing
+  preference, not a reusable component concern.
+
+  Overrides dis-system/site.css's own `main { padding: var(--ds-spacing-7) }`
+  (24px, all sides). Left/right are now 0 (dsgnrfhmn's direct follow-up,
+  2026-09-18, "the page itself should not have any paddings to the screen
+  edge" -- checked directly against Figma node 150:16071: the nav bar, tab
+  strip and every table row are full-bleed, w-full at x=0 inside the
+  1920px screen frame, no horizontal gutter anywhere). This replaces the
+  previous 20px-left/right-margin spec that used to live here -- that
+  value is superseded, not additive with this one. Bottom keeps the 20px
+  spacing-6 value (unchanged, not part of this follow-up; nothing in the
+  same Figma node contradicts it). Top is intentionally left alone -- each
+  page's own local <style> already governs it (0 for the full-height
+  pages, the site.css default for for-you.html).
+
+  gap:0 found via an actual browser measurement (2026-09-10, "the tables
+  should have the same spacing"): site.css's own `main` rule (a gallery-
+  page convention, gap: spacing-9/40px between top-level sections like
+  "Colors" -> "Type" -> "Shadows") was still in effect here uninherited-
+  from-arta, since this file only ever overrode padding. On for-you.html
+  specifically, <main> has two real <section> children (Analysed+For
+  Review in one, Archived/Filtered in the other) -- every OTHER table-to-
+  table transition on every page relies solely on each header-block's own
+  spacing-6 (20px) top padding for its "next table" gap (see header-
+  block/style.css and this project's earlier fix removing redundant flex
+  gaps elsewhere), but this one extra 40px site.css gap landed on top of
+  that same 20px for the one transition that happened to cross a
+  <section> boundary -- measured 60px there against 20px everywhere else
+  on the same page. gap:0 neutralizes it, leaving header-block's own
+  padding as the single, consistent source everywhere. main keeps
+  display:flex (portfolio/cv's own local `main > section
+  { flex:1 }` rules depend on main actually being a flex container).
+*/
+main {
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: var(--ds-spacing-6);
+  gap: var(--ds-spacing-0);
+}
+
+/*
+  Page-level custom scrollbar (explicit request, 2026-09-11: "scroll
+  invisible until the user starts scrolling" + "content doesn't shift
+  when the scrollbar appears/hides"). Same technique dis-system's own
+  paper-preview component already uses for its inner scroll panels
+  (see components/paper-preview/style.css's own header comment) --
+  native scrollbar hidden entirely (scrollbar-width:none /
+  ::-webkit-scrollbar{display:none}) and replaced with an absolutely-
+  positioned custom indicator, opacity-toggled by an is-scrolling class
+  arta.js adds on scroll and removes after a short idle timeout. Ported
+  here to the whole document's own scroll rather than reused as a shared
+  utility, matching paper-preview's own precedent of porting this same
+  technique locally per consumer (that component's own comment cites
+  site.css's horizontal scrollbar as its source, not a shared function).
+
+  Overlay, not a reserved-gutter track: .arta-scrollbar is
+  position:fixed, entirely outside any element's normal layout flow, so
+  toggling its opacity never changes any element's own width the way a
+  native scrollbar reserving/releasing a track would -- this is what
+  actually prevents the "content shifts when the scrollbar appears"
+  symptom, not just minimizes it.
+*/
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+  z-index:50 -- below every real overlay in this system (popup's backdrop
+  is 100, toast is 200; see their own style.css files), on purpose: a
+  page-scroll affordance has no business rendering on top of a modal or a
+  toast just because the user happened to scroll the page behind one
+  (popup.js doesn't lock page scroll while open, so that's a real,
+  reachable case, not a hypothetical). Still above ordinary page content,
+  which has no explicit z-index of its own.
+*/
+.arta-scrollbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--ds-spacing-2);
+  background-color: var(--ds-color-text-subactive);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 50;
+}
+
+html.is-scrolling .arta-scrollbar {
+  opacity: 1;
+}
+
+.arta-scrollbar__thumb {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  min-height: var(--ds-spacing-5);
+  background-color: var(--ds-color-text-active);
+}
+
+/*
+  Nav bar: the page links sit in the middle of the bar (dsgnrfhmn, 2026-10-13,
+  "align the buttons in the nav bar exactly in the middle"). dis-system's
+  nav-bar spaces its three groups with space-between, which centers the links
+  only when the left and right groups are equally wide; here the left group is
+  empty and the right one holds the theme toggle, so the links drifted off
+  center. Three columns, the outer two equal, put them on the bar's midline.
+  Local to arta by decision (not pushed to dis-system).
+*/
+.ds-nav-bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+}
+.ds-nav-bar__right {
+  justify-self: end;
+}
+
+/*
+  Nav bar title (Figma 331:36235, dsgnrfhmn, 2026-10-13): once the hero block's title
+  has scrolled under the bar, the page title stands at the bar's left, in the
+  hero title's typeface at body size. arta.js sets data-title="shown" on the bar.
+  It is aria-hidden: the h1 in the hero stays the page's heading.
+  Local to arta by decision (not pushed to dis-system).
+*/
+.ds-nav-bar__title {
+  padding: var(--ds-spacing-cell);
+  font-family: var(--ds-font-display-title-family);
+  font-size: 20px; /* dsgnrfhmn, 2026-10-13: larger than Figma's 16px body size */
+  font-weight: var(--ds-font-display-title-weight);
+  font-style: italic;
+  color: var(--ds-color-text-active);
+  white-space: nowrap;
+  /* Always laid out, only faded: the bar's height and the groups never move when
+     it appears, and the fade runs on opacity alone (no layout, no paint of the
+     page). Hidden state is also visibility:hidden so it is out of reach. */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 150ms ease-out, visibility 0s linear 150ms;
+}
+.ds-nav-bar[data-title="shown"] .ds-nav-bar__title {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 150ms ease-out, visibility 0s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ds-nav-bar__title,
+  .ds-nav-bar[data-title="shown"] .ds-nav-bar__title {
+    transition: none;
+  }
+}
+
+/*
+  Dark theme nav line (dsgnrfhmn, 2026-10-13, "add the line to the nav bar in the
+  dark theme like in the light one"): dis-system's border-nav is transparent in
+  dark (a request of 2026-09-30, since reversed here). The light line is the same
+  value as the table lines, so dark takes the dark table-line token, not a new value.
+*/
+:root[data-theme="dark"] .ds-nav-bar {
+  border-bottom-color: var(--ds-color-border-table);
+}
+
+/*
+  Dark theme accent, local to arta (explicit request, dsgnrfhmn 2026-10-24: "make #8F8FD9
+  the accent for the dark theme, locally, without changing the design system"). A
+  deliberate exception to "token values live in dis-system": dis-system keeps its own
+  dark accent (#B95E1D) for its other consumers, and only arta's pages draw this one.
+  It overrides the dark accent-1 slots that dis-system's output.css sets under
+  [data-theme="dark"]; this file loads after it. hover and pressed take the same colour
+  until dsgnrfhmn picks shades for them. input-border-focus is dark accent-1 too (a focused
+  input's border), but output.css writes it as its own value, so it is overridden here
+  with the others (dsgnrfhmn, 2026-10-25: a focused input had dis-system's orange edge).
+*/
+[data-theme="dark"] {
+  --ds-color-accent-1: #8F8FD9;
+  --ds-color-accent-1-hover: #8F8FD9;
+  --ds-color-accent-1-pressed: #8F8FD9;
+  --ds-color-input-border-focus: #8F8FD9;
+}
+
+/*
+  Print mode, the PDF export (arta-print.js, web/pdf_export.py). The page keeps only its
+  sheets in <div class="arta-print">, each at its own size, 842 x 599 px, one per PDF
+  page. The PDF page is 842 x 599 pt, the size of the artist's own portfolio PDF; the
+  exporter prints at a scale of 4/3, which maps the 842 px sheet onto it exactly.
+  Layout only: the sheets draw themselves.
+  Nothing animates: a fade caught half way would be printed half transparent.
+*/
+@page {
+  size: 842pt 599pt;
+  margin: 0;
+}
+
+/* :root twice, so this wins over the pages' own full-height app shell and page color. */
+html:root[data-print],
+html:root[data-print] body {
+  display: block;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  background-color: var(--ds-color-base-0);
+}
+
+html[data-print] *,
+html[data-print] *::before,
+html[data-print] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+.arta-print {
+  width: 842px;
+}
+
+/* The copied preview container keeps its class (the CV sheets read their sizes from it)
+   but none of its on-screen box: no fixed height, no scrolling, no gaps. !important,
+   because the preview modes size it with more specific rules. */
+.arta-print,
+.arta-print > * {
+  display: block !important;
+  height: auto !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.arta-print .ds-portfolio-sheet,
+.arta-print .ds-cv-sheet {
+  width: 842px;
+  height: 599px;
+  margin: 0;
+  break-after: page;
+  break-inside: avoid;
+}
+
+.arta-print .ds-portfolio-sheet:last-child,
+.arta-print .ds-cv-sheet:last-child {
+  break-after: auto;
+}

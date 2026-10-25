@@ -1,0 +1,13 @@
+# Exact versions: an update is a deliberate edit here.
+pillow==12.3.0
+pillow-heif==1.8.1
+
+# Gmail and Drive, read-only scopes (core/google_auth.py). google-auth-oauthlib is
+# only used by the one-off consent flow (scripts/google_auth_setup.py).
+google-auth==2.62.0
+google-auth-oauthlib==1.5.0
+google-api-python-client==2.201.0
+
+# PDF export through headless Chromium (web/pdf_export.py); the browser itself is
+# installed by `python -m playwright install chromium`.
+playwright==1.62.0

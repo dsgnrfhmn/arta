@@ -1,0 +1,18 @@
+# Hygiene only, not a security control: no real configuration, key, token or
+# data file lives in this tree. Those are in ~/.config/arta/ and the data dir.
+
+# Python
+__pycache__/
+.pytest_cache/
+venv/
+.venv/
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Session harness stubs
+.claude/.cc-writes
